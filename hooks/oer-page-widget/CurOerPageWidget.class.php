@@ -1,5 +1,5 @@
 <?php
-class OER_Page_Widget extends \Elementor\Widget_Base {
+class CurOERPageWidget extends \Elementor\Widget_Base {
     
     // ... other methods like get_title(), get_icon(), get_categories(), get_keywords()
 
@@ -30,11 +30,37 @@ class OER_Page_Widget extends \Elementor\Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'template_id',
+            [
+                'label' => __( 'Select Page Template', 'curriki-library' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'options' => $this->get_template_options(),
+                'default' => '',
+            ]
+        );
+
         $this->end_controls_section();
+    }
+
+    private function get_template_options() {
+        $templates = \Elementor\Plugin::$instance->templates_manager->get_templates();
+        // filter $templates base on array item key 'type' => 'page'
+        $templates = array_filter($templates, function($template) {
+            return $template['type'] === 'page';
+        });
+        $options = [];
+    
+        foreach ($templates as $template) {
+            $options[$template['template_id']] = $template['title'];
+        }
+    
+        return $options;
     }
 
     protected function render() {
         $settings = $this->get_settings_for_display();
+        $template_id = $settings['template_id'] ? intval($settings['template_id']) : 0;
         $resourceId = $settings['resource_id'];
 
         /* // Fetch resource data from your custom table based on the resource ID
@@ -46,11 +72,14 @@ class OER_Page_Widget extends \Elementor\Widget_Base {
         echo '<p>' . $resourceData['content'] . '</p>';
         echo '</div>';
         */
-        echo '<div>';
-        echo '<h1>' . $resourceId . '</h1>';
-        echo '<h2>Test Resource title</h2>';
-        echo '<p>Test Resource Content</p>';
-        echo '</div>';
+        if ($template_id) {
+            // Use the selected template
+            echo Elementor\Plugin::$instance->frontend->get_builder_content( $template_id, array(
+                'title' => 'test title',
+                'content' => 'test content',
+                // ... other dynamic data
+            ) );    
+        }
     }
 }
 
