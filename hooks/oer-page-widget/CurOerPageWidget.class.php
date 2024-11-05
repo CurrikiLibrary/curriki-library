@@ -60,25 +60,28 @@ class CurOERPageWidget extends \Elementor\Widget_Base {
 
     protected function render() {
         $settings = $this->get_settings_for_display();
-        $template_id = $settings['template_id'] ? intval($settings['template_id']) : 0;
+        $templateId = $settings['template_id'] ? intval($settings['template_id']) : 0;
         $resourceId = $settings['resource_id'];
 
-        /* // Fetch resource data from your custom table based on the resource ID
-        $resourceData = $this->fetchResourceData($resourceId);
+        require_once(__DIR__ . '/../core/CurrikiResources.class.php');
+        $res = new CurrikiResources();
+        
+        global $oerPageData;
 
-        // Display the resource data using Elementor's template engine
-        echo '<div>';
-        echo '<h2>' . $resourceData['title'] . '</h2>';
-        echo '<p>' . $resourceData['content'] . '</p>';
-        echo '</div>';
-        */
-        if ($template_id) {
+        if (isset($_GET['pageurl'])) {
+            $oerPageData = $res->getResourceUserById(0, rtrim($_GET['pageurl'], '/'));    
+        } elseif ($resourceId && is_numeric($resourceId)) {
+            $oerPageData = $res->getResourceUserById($resourceId, '');    
+        } elseif ($resourceId && !is_numeric($resourceId)) {
+            $resourceIdBeingSlug = $resourceId;
+            $oerPageData = $res->getResourceUserById(0, $resourceIdBeingSlug);    
+        } else {
+            $oerPageData = null;
+        }
+        
+        if ($templateId && !is_null($oerPageData)) {
             // Use the selected template
-            echo Elementor\Plugin::$instance->frontend->get_builder_content( $template_id, array(
-                'title' => 'test title',
-                'content' => 'test content',
-                // ... other dynamic data
-            ) );    
+            echo Elementor\Plugin::$instance->frontend->get_builder_content( $templateId);    
         }
     }
 }
