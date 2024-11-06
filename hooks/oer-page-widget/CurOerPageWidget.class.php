@@ -81,7 +81,7 @@ class CurOERPageWidget extends \Elementor\Widget_Base {
         
         if ($templateId && !is_null($oerPageData)) {
             // Use the selected template
-            echo Elementor\Plugin::$instance->frontend->get_builder_content( $templateId);    
+            echo \Elementor\Plugin::$instance->frontend->get_builder_content($templateId);    
         }
     }
 }
