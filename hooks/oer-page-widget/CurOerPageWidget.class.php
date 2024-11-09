@@ -58,6 +58,71 @@ class CurOERPageWidget extends \Elementor\Widget_Base {
         return $options;
     }
 
+    private function prepare_collection_contents($resource) {
+        $output_data = [];
+
+        if (isset($resource['type']) && $resource['type'] == 'collection' && isset($resource['collection'])) {
+            $rid = $resource['resourceid'];
+            $persist_rids[] = $rid;
+            $persist_rids = array_unique($persist_rids);
+            $mrid = implode("-", $persist_rids);
+            
+            foreach ($resource['collection'] as $collection) {
+                $url = get_bloginfo('url') . '/oer/' . $collection['pageurl'];
+                $url .= "/?mrid=" . $mrid;
+                
+                if (
+                    isset($collection["lp_object"]) && $collection["lp_object"] !== ''
+                    && isset($collection["lp_object_id"]) && $collection["lp_object_id"] > 0
+                    && isset($collection["lp_course_id"]) && $collection["lp_course_id"] > 0
+                ) {
+                    $url .= "&lp_object=" . $collection["lp_object"] . "&lp_object_id=" . $collection["lp_object_id"] . "&lp_course_id=" . $collection["lp_course_id"];
+                }
+
+                $url .= isset($_GET['oer-only']) && $_GET['oer-only'] == 'true' ? '&oer-only=true' : '';
+
+                $content = htmlentities(!empty($collection['description']) ? $collection['description'] : $collection['content']);
+                global $wpdb;
+                $colObj = $wpdb->get_row("select * from resources where resourceid=" . $collection['resourceid']);
+                
+                $progress_content = "";
+                if ($print_progress_for_collections) {
+                    $progress_for_playlist = ltiGetProgressForPlaylist($collection['resourceid'], $res);
+                    $progress_content = 'MY PROGRESS: ' . $progress_for_playlist['completed'] . '/' . $progress_for_playlist['total'] . ' Activities Completed';
+                } elseif ($print_progress_for_lti_resource && is_object($colObj) && trim($colObj->type) === 'resource') {
+                    $progress_lti_data = ltiGetResourceProgress($collection['resourceid'], get_current_user_id());
+                    $progress_content = match ($progress_lti_data['status']) {
+                        'take-lesson' => 'In Progress',
+                        'completed' => 'MY SCORE: ' . $progress_lti_data['data']['gradepercent'] . '%',
+                        default => 'Not Started',
+                    };
+                }
+
+                // $m_stars = str_repeat('<span class="fa fa-star">', (int) $collection['memberrating']) . str_repeat('<span class="fa fa-star-o">', 5 - (int) $collection['memberrating']);
+                $m_stars = (int) $collection['memberrating'];
+                $reviewrating = round($collection['reviewrating'], 1);
+                $reviewrating = number_format($reviewrating, 1);
+                
+                $output_data[] = [
+                    'title' => htmlentities($collection['title']),
+                    'url' => $url,
+                    'contributor' => $collection['contributorid_Name'],
+                    'progress_content' => $progress_content,
+                    'description' => strip_tags(html_entity_decode($content)),
+                    'member_rating_stars' => $m_stars,
+                    'curriki_rating' => [
+                        'review_rating' => $reviewrating ?? null,
+                        'status' => $collection['reviewstatus'] ?? null,
+                        'partner' => $collection['partner'] ?? null,
+                    ],
+                ];
+            }
+        }
+        
+        // The output data array now holds all the information in an associative array format.
+        return $output_data;
+    }
+
     protected function render() {
         $settings = $this->get_settings_for_display();
         $templateId = $settings['template_id'] ? intval($settings['template_id']) : 0;
@@ -67,19 +132,30 @@ class CurOERPageWidget extends \Elementor\Widget_Base {
         $res = new CurrikiResources();
         
         global $oerPageData;
+        global $oerPageDataById;
 
         if (isset($_GET['pageurl'])) {
-            $oerPageData = $res->getResourceUserById(0, rtrim($_GET['pageurl'], '/'));    
+            $oerPageData = $res->getResourceUserById(0, rtrim($_GET['pageurl'], '/')); 
+            $oerPageDataById = $res->getResourceById(0, rtrim($_GET['pageurl'], '/'), true);
         } elseif ($resourceId && is_numeric($resourceId)) {
-            $oerPageData = $res->getResourceUserById($resourceId, '');    
+            $oerPageData = $res->getResourceUserById($resourceId, '');
+            $oerPageDataById = $res->getResourceById($resourceId, '', true);
         } elseif ($resourceId && !is_numeric($resourceId)) {
             $resourceIdBeingSlug = $resourceId;
             $oerPageData = $res->getResourceUserById(0, $resourceIdBeingSlug);    
+            $oerPageDataById = $res->getResourceById(0, $resourceIdBeingSlug, true);
         } else {
             $oerPageData = null;
+            $oerPageDataById = null;
         }
         
         if ($templateId && !is_null($oerPageData)) {
+
+            // if $oerPageDataById not null
+            if (!is_null($oerPageDataById)) {
+                $oerCollections = $this->prepare_collection_contents($oerPageDataById);
+                $oerPageDataById['oerCollections'] = $oerCollections;
+            }
             // Use the selected template
             echo \Elementor\Plugin::$instance->frontend->get_builder_content($templateId);    
         }

@@ -49,19 +49,7 @@ function oer_page_shortcode_fun($atts) {
         }
         $output = $curriki_rating;
     } elseif ($oerPageData && $property == 'memberrating-stars') {
-        if ((int) $oerPageData['memberrating'] == 0)
-            $stars = '<i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>';
-        elseif ((int) $oerPageData['memberrating'] == 1)
-            $stars = '<i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>';
-        elseif ((int) $oerPageData['memberrating'] == 2)
-            $stars = '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>';
-        elseif ((int) $oerPageData['memberrating'] == 3)
-            $stars = '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i><i class="fa fa-star-o"></i>';
-        elseif ((int) $oerPageData['memberrating'] == 4)
-            $stars = '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-o"></i>';
-        elseif ((int) $oerPageData['memberrating'] == 5)
-            $stars = '<i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i>';
-        $output = $stars;
+        $output = $oerPageData['memberrating'];
     } elseif ($oerPageData && key_exists($property, $oerPageData) && $property == 'pageurl') {
         $output = '<a href="' . esc_url(site_url('oer/' . $oerPageData[$property])) . '">' . esc_html(esc_url(site_url('oer/' . $oerPageData[$property]))) . '</a>';
     } elseif ($oerPageData && key_exists($property, $oerPageData)) {
