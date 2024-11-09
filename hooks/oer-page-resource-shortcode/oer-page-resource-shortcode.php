@@ -16,7 +16,9 @@ function oer_page_resource_shortcode_fun($atts) {
     global $oerPageResourceData;
    
     // if property exists in the $oerPageResourceData object, return the value
-    if ($oerPageResourceData && $property == 'contributor') {
+    if ($oerPageResourceData && $property == 'url') {
+        $output = $oerPageResourceData['url'];
+    } elseif ($oerPageResourceData && $property == 'contributor') {
         $output = $oerPageResourceData['contributor'];
     } elseif ($oerPageResourceData && $property == 'title') {
         $output = $oerPageResourceData['title'];
