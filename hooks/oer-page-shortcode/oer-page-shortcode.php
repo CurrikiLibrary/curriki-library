@@ -34,7 +34,7 @@ function oer_page_shortcode_fun($atts) {
 
         if (!isset($_GET['viewer']) && (isset($resource["toc_persist"]) && count($resource["toc_persist"]) > 0 || (isset($resource['collection']) && count($resource['collection']) > 0))) {
             if(!empty($resource['collections_resource_blogngs_to'])) {                
-                $resource_content .= '<ul'. $ul_class .'>';
+                $resource_content = '<ul'. $ul_class .'>';
                 foreach($resource['collections_resource_blogngs_to'] as $resourceItem){
                     $url = site_url() . "/oer/".$resourceItem->pageurl;
                     $resource_content .= '<li><a href="' . $url . '"><i'. $li_icon_class .'></i> ' . $resourceItem->title . '</a></li>';
