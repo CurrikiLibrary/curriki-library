@@ -6,7 +6,12 @@ function oer_page_shortcode_fun($atts) {
     $atts = shortcode_atts([
         'property' => '',
         'slug' => '',
-        'length' => 0
+        'length' => 0,
+        'ul_class' => '',
+        'li_icon_class' => '',
+        'heading_tag' => 'h4',
+        'heading_class' => '',
+        'heading_icon_class' => '',
     ], $atts, 'oer-page');
 
     // Sanitize the inputs
@@ -14,8 +19,104 @@ function oer_page_shortcode_fun($atts) {
     $length = intval(trim($atts['length']));
     
     global $oerPageData;
+    global $oerPageDataById;
     // if property exists in the $oerPageData object, return the value
-    if ($oerPageData && $property == 'content') {
+    if ($oerPageDataById && $property == 'in-collection') {
+        $resource = $oerPageDataById;
+        $resource_content = 'Not in collection';
+        $output = '';
+        // if ul_class and heading_class are set, make relevant variables with values
+        $ul_class = $atts['ul_class'] ? ' class="' . esc_attr($atts['ul_class']) . '"' : '';
+        $li_icon_class = $atts['li_icon_class'] ? ' class="' . esc_attr($atts['li_icon_class']) . '"' : '';
+        $heading_tag = $atts['heading_tag'] ? esc_attr($atts['heading_tag']) : 'h4';
+        $heading_class = $atts['heading_class'] ? ' class="' . esc_attr($atts['heading_class']) . '"' : '';
+        $heading_icon_class = $atts['heading_icon_class'] ? ' class="' . esc_attr($atts['heading_icon_class']) . '"' : '';
+
+        if (!isset($_GET['viewer']) && (isset($resource["toc_persist"]) && count($resource["toc_persist"]) > 0 || (isset($resource['collection']) && count($resource['collection']) > 0))) {
+            if(!empty($resource['collections_resource_blogngs_to'])) {                
+                $resource_content .= '<ul'. $ul_class .'>';
+                foreach($resource['collections_resource_blogngs_to'] as $resourceItem){
+                    $url = site_url() . "/oer/".$resourceItem->pageurl;
+                    $resource_content .= '<li><a href="' . $url . '"><i'. $li_icon_class .'></i> ' . $resourceItem->title . '</a></li>';
+                }
+                $resource_content .= '</ul>';
+            }
+
+            $output = $resource_content;
+        }
+    } elseif ($oerPageDataById && $property == 'toc') {
+        $resource = $oerPageDataById;
+        $resource_content = '';
+        $output = '';
+        // if ul_class and heading_class are set, make relevant variables with values
+        $ul_class = $atts['ul_class'] ? ' class="' . esc_attr($atts['ul_class']) . '"' : '';
+        $li_icon_class = $atts['li_icon_class'] ? ' class="' . esc_attr($atts['li_icon_class']) . '"' : '';
+        $heading_tag = $atts['heading_tag'] ? esc_attr($atts['heading_tag']) : 'h4';
+        $heading_class = $atts['heading_class'] ? ' class="' . esc_attr($atts['heading_class']) . '"' : '';
+        $heading_icon_class = $atts['heading_icon_class'] ? ' class="' . esc_attr($atts['heading_icon_class']) . '"' : '';
+
+        if (!isset($_GET['viewer']) && (isset($resource["toc_persist"]) && count($resource["toc_persist"]) > 0 || (isset($resource['collection']) && count($resource['collection']) > 0))) {
+            
+            $toc_persist_rids = $resource["toc_persist_rids"];
+            foreach ($resource["toc_persist"] as $toc_persist) {
+                //$table_of_content = $resource["resources_table_of_content"];
+                $persist_rids = $toc_persist_rids;
+                $table_of_content = $toc_persist;
+    
+                $rid = $toc_persist->main_resource_resources["resource"]->resourceid;
+                //unset($persist_rids[$rid]);
+                $persist_rids[] = $rid;
+                $persist_rids = array_unique($persist_rids);
+                $mrid = implode("-", $persist_rids);
+                if ((isset($resource['collection']) && count($resource['collection']) > 0) || $table_of_content->main_resource_resources["collections"] > 0) {
+                    if ($table_of_content->main_resource_resources["collections"] > 0) {
+                        $resource_content .= '<' . $heading_tag . $heading_class . '><span' . $heading_icon_class . '></span> ' . htmlentities($table_of_content->main_resource_resources["resource"]->title) . '</' . $heading_tag . '>';
+
+                        $resource_content .= '<ul' . $ul_class . '>';
+                        foreach ($table_of_content->main_resource_resources["collections"] as $collection) {
+                            $url_toc = get_bloginfo('url') . '/oer/' . $collection['pageurl'] . '/?mrid=' . $mrid;
+                            $url_toc .= isset($_GET['oer-only']) && $_GET['oer-only'] == 'true' ? '&oer-only=true':'';
+
+                            if (
+                                isset($collection["lp_object"]) && $collection["lp_object"] !== ''
+                                && isset($collection["lp_object_id"]) && $collection["lp_object_id"] > 0
+                                && isset($collection["lp_course_id"]) && $collection["lp_course_id"] > 0
+                            ) {
+                                $url_toc .= "&lp_object=" . $collection["lp_object"] . "&lp_object_id=" . $collection["lp_object_id"] . "&lp_course_id=" . $collection["lp_course_id"];
+                            }
+                            $resource_content .= '<li><a href="' . $url_toc . '"><i'. $li_icon_class .'></i> ' . htmlentities($collection['title']) . '</a></li>';
+                        }
+                        $resource_content .= '</ul>';
+                    }
+                }
+            }
+
+            if (isset($resource['collection']) && count($resource['collection']) > 0) {
+                $persist_rids = $toc_persist_rids;
+                $rid = $resource['resourceid'];
+                $persist_rids[] = $rid;
+                $persist_rids = array_unique($persist_rids);
+                $mrid = implode("-", $persist_rids);
+                $resource_content .= '<' . $heading_tag . $heading_class . '><span' . $heading_icon_class . '></span> ' . htmlentities($resource['title']) . '</' . $heading_tag . '>';
+
+                $resource_content .= '<ul' . $ul_class . '>';
+                foreach ($resource['collection'] as $collection) {
+                    $url_toc = get_bloginfo('url') . '/oer/' . $collection['pageurl'] . "/?mrid=" . $mrid;
+                    $url_toc .= isset($_GET['oer-only']) && $_GET['oer-only'] == 'true' ? '&oer-only=true':'';
+                    if (
+                        isset($collection["lp_object"]) && $collection["lp_object"] !== ''
+                        && isset($collection["lp_object_id"]) && $collection["lp_object_id"] > 0
+                        && isset($collection["lp_course_id"]) && $collection["lp_course_id"] > 0
+                    ) {
+                        $url_toc .= "&lp_object=" . $collection["lp_object"] . "&lp_object_id=" . $collection["lp_object_id"] . "&lp_course_id=" . $collection["lp_course_id"];
+                    }
+                    $resource_content .= '<li><a href="' . $url_toc . '"><i' . $li_icon_class . '></i> ' . htmlentities($collection['title']) . '</a></li>';
+                }
+                $resource_content .= '</ul>';
+            }
+            $output = $resource_content;
+        }
+    } elseif ($oerPageData && $property == 'content') {
         $oerPageData_desc .= isset($oerPageData['description']) ? $oerPageData['description'] : "";
         $content = (empty($oerPageData['content']) ? $oerPageData_desc : $oerPageData['content']);
         $output = $content;
