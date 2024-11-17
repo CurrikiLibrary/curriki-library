@@ -1,5 +1,6 @@
 <?php
 require_once 'oer_shortcode_columns_fun.php';
+require_once dirname(__DIR__) . '/core/CurrikiResources.class.php';
 
 function oer_shortcode_fun($atts) {
     // Define the valid columns
@@ -30,6 +31,8 @@ function oer_shortcode_fun($atts) {
         return 'OER slug is required.';
     }
 
+
+
     global $wpdb;
     $result = null;
     // if $property is in the $valid_columns array, query the resources table
@@ -53,7 +56,15 @@ function oer_shortcode_fun($atts) {
 
     // Display the result
     if ($result) {
-        if ($property == 'content') {
+        if ($property == 'reviewrating') {
+            $reviewrating = round($result->$property, 1);
+            $reviewrating = number_format($reviewrating, 1);
+            $output = $reviewrating;
+        }elseif ($property == 'pageurl') {
+            $output = site_url('oer/' . $result->$property);
+        } elseif ($property == 'memberrating') {
+            $output = $result->$property;
+        } elseif ($property == 'content') {
             $output = $result->$property;
         } elseif ($property == 'pageurl') {
             $output = site_url('oer/' . $result->$property);
