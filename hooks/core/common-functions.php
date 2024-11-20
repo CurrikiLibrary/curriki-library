@@ -56,7 +56,7 @@ function cur_get_my_library_resources_query($library_sorting_get_val,$userid, $l
             $query_where_clause_2 = " AND r.title LIKE '%{$library_search_phrase}%'";
         }
 
-        $q_resources = "select 'Favorite', firstname, lastname, uniqueavatarfile, city, state, country, r2.lasteditdate, ce.resourceid, REPLACE(r2.title,'\\\','') as title, r2.type, displayseqno, r2.memberrating, r2.reviewrating, r2.createdate, r2.contributorid, r2.contributiondate,r.partner, if(ifnull(e.resourceid, 'F') = 'F', 'F', 'T') as editable, r.active
+        $q_resources = "select 'Favorite', firstname, lastname, uniqueavatarfile, city, state, country, r2.lasteditdate, ce.resourceid, REPLACE(r2.title,'\\\','') as title, r2.type, displayseqno, r2.memberrating, r2.reviewrating, r2.createdate, r2.contributorid, r2.contributiondate,r.partner, if(ifnull(e.resourceid, 'F') = 'F', 'F', 'T') as editable, r.active, r2.pageurl
             from resources r
             inner join collectionelements ce on ce.collectionid = r.resourceid
             inner join resources r2 on ce.resourceid = r2.resourceid
@@ -75,7 +75,7 @@ function cur_get_my_library_resources_query($library_sorting_get_val,$userid, $l
             and r.contributorid = '".$userid."'
             {$query_where_clause_1}
             Union
-            select 'Contributions', firstname, lastname, uniqueavatarfile, city, state, country, lasteditdate, r.resourceid, REPLACE(title,'\\\','') as title, type, NULL, r.memberrating, r.reviewrating, r.createdate, r.contributorid, r.contributiondate, r.partner, 'T', r.active
+            select 'Contributions', firstname, lastname, uniqueavatarfile, city, state, country, lasteditdate, r.resourceid, REPLACE(title,'\\\','') as title, type, NULL, r.memberrating, r.reviewrating, r.createdate, r.contributorid, r.contributiondate, r.partner, 'T', r.active, r.pageurl
             from resources r left join users u on u.userid = r.contributorid
             where contributorid = '".$userid."'
             {$query_resource_active_clause}

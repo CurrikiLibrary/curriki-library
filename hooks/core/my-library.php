@@ -56,8 +56,9 @@ function curriki_user_my_library() {
 
     $user = wp_get_current_user();                                        
     $isAdmin = is_array($user->roles) && in_array('administrator', $user->roles) ? true : false;            
-
+    global $wpdb;
     foreach ($resources as $collection) {
+        $contributor_user = $wpdb->get_row("select * from cur_users where ID = {$collection->contributorid}");
         $title_styles = "";
         if($isAdmin && $collection->active === 'F'){
             $title_styles = " in_active_resource_tile";
@@ -102,7 +103,9 @@ function curriki_user_my_library() {
             'member_rating' => $collection->memberrating,
             'review_rating' => $collection->reviewrating,
             'contribution_date' => date('M d, Y', strtotime($collection->contributiondate)),
-            'editable' => property_exists($collection, "editable") && isset($collection->editable) && $collection->editable === 'T'
+            'editable' => property_exists($collection, "editable") && isset($collection->editable) && $collection->editable === 'T',
+            'createdate' => $collection->createdate,
+            'pageurl' => $collection->pageurl,
         ];
 
         $user_library['resources'][] = $resource_data;
