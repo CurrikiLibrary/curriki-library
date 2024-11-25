@@ -16,7 +16,22 @@ function my_library_oer_shortcode_fun($atts) {
     global $myLibraryOerData;
    
     // if property exists in the $myLibraryOerData object, return the value
-    if ($myLibraryOerData && $property == 'member-rating') {
+    if ($property == 'rate-this-resource-form') {
+        require_once dirname(__DIR__) . '/core/curriki-customized.php';
+        $output = curriki_library_scripts();
+    } elseif ($myLibraryOerData && $property == 'custom-attributes') {
+        $output = 'oer-title|' . $myLibraryOerData['title'];
+        //$output .= '\noer:id' . $myLibraryOerData['resourceid'];
+    } elseif ($myLibraryOerData && $property == 'resourceid') {
+        $output = $myLibraryOerData['resourceid'];
+    } elseif ($myLibraryOerData && $property == 'rate-this-resource-link') {
+        //$library = '<a href="#rate-this-resource-popup" onclick="jQuery(\'#rate_resource-dialog\').show(); jQuery(\'#review-resource-id\').val(' . $collection->resourceid . '); jQuery(\'.curriki-review-title\').html(\'' . ($collection->title ? $collection->title : __('Go to Collection', 'curriki')) . '\'); setInterval(function () {jQuery( \'#rate_resource-dialog\' ).center_fn()}, 1);">' . __('Rate this resource', 'curriki') . '</a>';
+        $output = '<a class="rate-this-resource-link" id="rid-' . $myLibraryOerData['resourceid'] . '" href="#rate-this-resource-popup">' . __('Rate this resource', 'curriki') . '</a>';
+    } elseif ($myLibraryOerData && $property == 'rate-this-resource-link-script') {
+        // script to click on .rate-this-resource-link and get id based on rid- prefix
+        //$output = '<script>jQuery(document).ready(function() { jQuery(".rate-this-resource-link").click(function() { var rid = jQuery(this).attr("id").replace("rid-", ""); window.selected_rid = rid; }); });</script>';
+        //$output = '<script>jQuery(document).ready(function() { jQuery(".rate-this-resource-link").click(function() { var rid = jQuery(this).attr("id").replace("rid-", ""); window.selected_rid = rid; }); });</script>';
+    } elseif ($myLibraryOerData && $property == 'member-rating') {
         $output = $myLibraryOerData['member_rating'] ? intval($myLibraryOerData['member_rating']) : 0;
     } elseif ($myLibraryOerData && $property == 'author-url') {
         $output = esc_url($myLibraryOerData['author']['contributor_url']);
@@ -39,7 +54,20 @@ function my_library_oer_shortcode_fun($atts) {
         $content = (empty($myLibraryOerData['content']) ? $myLibraryOerData_desc : $myLibraryOerData['content']);
         $output = $content;
     } elseif ($myLibraryOerData && $property == 'curriki-rating') {
-        $output = $myLibraryOerData['curriki_rating']['review_rating'];
+        // $output = $myLibraryOerData['curriki_rating']['review_rating'];
+        $curriki_rating = '';
+        if (isset($myLibraryOerData['curriki_rating']['reviewstatus']) && $myLibraryOerData['curriki_rating']['reviewstatus'] == 'reviewed' && $myLibraryOerData['curriki_rating']['reviewrating'] != null && $myLibraryOerData['curriki_rating']['reviewrating'] >= 0) {
+            $curriki_rating .= '<span class="rating-points curriki-rating-title-text tooltip-rating">' . $myLibraryOerData['curriki_rating']['reviewrating'] . '/3.0</span>';
+        } elseif (isset($myLibraryOerData['curriki_rating']['reviewstatus']) && $myLibraryOerData['curriki_rating']['reviewstatus'] == 'reviewed' && $myLibraryOerData['curriki_rating']['reviewrating'] != null && $myLibraryOerData['curriki_rating']['reviewrating'] < 0) {
+            $curriki_rating .= '<span class="rating-points curriki-rating-title-text tooltip-rating">-</span>';
+        } elseif (isset($myLibraryOerData['curriki_rating']['partner']) && $myLibraryOerData['curriki_rating']['partner'] == 'T') {
+            $curriki_rating .= '<span class="rating-points curriki-rating-title-text tooltip-rating">P</span>';
+        } elseif (isset($myLibraryOerData['curriki_rating']['partner']) && $myLibraryOerData['curriki_rating']['partner'] == 'C') {
+            $curriki_rating .= '<span class="rating-points curriki-rating-title-text tooltip-rating">C</span>';
+        } else {
+            $curriki_rating .= '<span class="rating-points curriki-rating-title-text tooltip-rating">NR</span>';
+        }
+        $output = $curriki_rating;
     } elseif ($myLibraryOerData && $property == 'memberrating-stars') {
         $output = $myLibraryOerData['member_rating_stars'];
     } else {

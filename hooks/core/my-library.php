@@ -100,6 +100,7 @@ function curriki_user_my_library() {
                 'photo' => $myphoto,
                 'contributor_url' => get_bloginfo('url') . '/user-library/?user=' . $contributor_user->user_nicename
             ],
+            'reviewstatus' => $collection->reviewstatus,
             'member_rating' => $collection->memberrating,
             'review_rating' => $collection->reviewrating,
             'contribution_date' => date('M d, Y', strtotime($collection->contributiondate)),

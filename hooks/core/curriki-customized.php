@@ -2282,45 +2282,32 @@ function curriki_member_rating($rating = 0) {
 }
 
 function curriki_library_scripts() {
+  ob_start();
   ?>
-  <div id="rate_resource-dialog" class="review-content-box rounded-borders-full border-grey join-oauth-modal modal border-grey rounded-borders-full grid_8" style="display: none;">
-    <h3 class="modal-title curriki-review-title">Rate This</h3>
-    <div class="review review-form">
-      <div class="dialog_result_div"><div id="resource-rating-form_result" class="dialog_result"></div></div>
-      <div class="review-content" style="width: 100% !important;">
-        <div class="review-rating rating">
 
-          <span onclick="resourceRating(1);" id="resource-rating-1" class="fa fa-star-o"></span>
-          <span onclick="resourceRating(2);" id="resource-rating-2" class="fa fa-star-o"></span>
-          <span onclick="resourceRating(3);" id="resource-rating-3" class="fa fa-star-o"></span>
-          <span onclick="resourceRating(4);" id="resource-rating-4" class="fa fa-star-o"></span>
-          <span onclick="resourceRating(5);" id="resource-rating-5" class="fa fa-star-o"></span></span>
-        </div>
-        <form method="post" action="" id="resource-rating-form">
-          <input type="hidden" name="review-resource-id" id="review-resource-id" value="" />
-          <input type="hidden" name="resource-rating" id="resource-rating" value="0">
-          <textarea name="resource-comments"></textarea>
-          <button class="green-button"><?php echo __('Submit Review','curriki'); ?></button>
-        </form>
-      </div>
-    </div>
-    <div class="close"><span class="fa fa-close" onclick="jQuery('#rate_resource-dialog').hide();"></span></div>
-  </div>
-  <script type="text/javascript">
-
+<script type="text/javascript">
     function resourceRating(star) {
-      jQuery("#resource-rating-" + star).siblings().addClass('fa-star-o').removeClass('fa-star');
+      
+      jQuery("#resource-rating-" + star).siblings().addClass('far');
+      jQuery("#resource-rating-" + star).siblings().removeClass('fas');
 
       for (i = 1; i <= star; i++)
       {
-        jQuery("#resource-rating-" + i).addClass('fa-star');
-        jQuery("#resource-rating-" + i).removeClass('fa-star-o');
+        jQuery("#resource-rating-" + i).addClass('fas');
+        jQuery("#resource-rating-" + i).addClass('e-rating-icon-marked-color');
+        
+        jQuery("#resource-rating-" + i).removeClass('far');
       }
+
       jQuery("#resource-rating").val(star);
     }
+  </script>
+  
+  <script type="text/javascript">
     jQuery("#resource-rating-form").submit(function (event) {
+      // prevent default posting of form
+      event.preventDefault();
       jQuery("#resource-rating-form_result").empty().append(jQuery("#please-wait-text").val());
-      jQuery(".dialog_result_div").css('background-color', '#031770');
       // Stop form from submitting normally
       event.preventDefault();
       // Get some values from elements on the page:
@@ -2334,18 +2321,13 @@ function curriki_library_scripts() {
       var posting = jQuery.post(url, {rating: resource_rating, comments: resource_comments, resource_id: resource_id, action: 'curriki_resource_rating'});
       // Put the results in a div
       posting.done(function (data) {
-        if (data.trim() != '1') {
-          jQuery("#resource-rating-form_result").empty().append(data);
-          jQuery(".dialog_result_div").css('background-color', '#031770');
-        } else {
-          jQuery("#resource-rating-form_result").empty().append('Review Posted!');
-          jQuery(".dialog_result_div").css('background-color', '#031770');
-        }
+        jQuery("#resource-rating-form_result").empty().append('Review Posted!');
       });
 
       return false;
 
     });
+
     function curriki_sharethis(rid, title) {
       //"https://www.addthis.com/bookmark.php?source=tbx32nj-1.0&v=300&url='.urlencode(get_bloginfo('url').'/oer/?rid='.$rid).'";
       var url_to_share = '<?php echo get_bloginfo('url') . '/oer/?rid='; ?>' + rid;
@@ -2353,7 +2335,34 @@ function curriki_library_scripts() {
       alert(url_to_share);
     }
   </script>
+  
+  <div id="rate_resource-dialog" class="review-content-box rounded-borders-full border-grey join-oauth-modal modal border-grey rounded-borders-full grid_8">
+    <h3 class="modal-title curriki-review-title">Rate This</h3>
+    <div class="review review-form">
+      <div class="dialog_result_div"><div id="resource-rating-form_result" class="dialog_result"></div></div>
+      <div class="review-content" style="width: 100% !important;">
+        <div class="review-rating rating">
+
+          <span onclick="resourceRating(1);" id="resource-rating-1" class="far fa-star e-rating-icon-marked-color"></span>
+          <span onclick="resourceRating(2);" id="resource-rating-2" class="far fa-star e-rating-icon-marked-color"></span>
+          <span onclick="resourceRating(3);" id="resource-rating-3" class="far fa-star e-rating-icon-marked-color"></span>
+          <span onclick="resourceRating(4);" id="resource-rating-4" class="far fa-star e-rating-icon-marked-color"></span>
+          <span onclick="resourceRating(5);" id="resource-rating-5" class="far fa-star e-rating-icon-marked-color"></span></span>
+        </div>
+        <form method="post" action="" id="resource-rating-form">
+          <input type="hidden" name="review-resource-id" id="review-resource-id" value="" />
+          <input type="hidden" name="resource-rating" id="resource-rating" value="0">
+          <textarea name="resource-comments"></textarea>
+          <button class="green-button"><?php echo __('Submit Review','curriki'); ?></button>
+        </form>
+      </div>
+    </div>
+    <div class="close"><span class="fa fa-close" onclick="jQuery('#rate_resource-dialog').hide();"></span></div>
+  </div>
+
+ 
   <?php
+  return ob_get_clean();
 }
 
 function curriki_library_sorting($page, $position, $selected = "", $userid = '') {
