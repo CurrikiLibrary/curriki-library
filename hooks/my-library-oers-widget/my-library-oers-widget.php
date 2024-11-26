@@ -1,6 +1,6 @@
 <?php
 
-function register_elementor_my_library_oers_widget() {
+function register_elementor_my_library_oers_widget($widgets_manager) {
     require_once(__DIR__ . '/functions.php');
     wp_enqueue_script('my-library-oers-widget', plugins_url('script.js', __FILE__), [], '1.0.0', true);
      // Localize the script with new data
@@ -9,11 +9,8 @@ function register_elementor_my_library_oers_widget() {
     ));
 
     require_once(__DIR__ . '/CurMyLibraryOersWidget.class.php');
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type(new \CurMyLibraryOersWidget());
-
-    // require_once(__DIR__ . '/class-oer-page-query.php');
-    // \Elementor\Plugin::instance()->modules_manager->get_modules('elementor-pro')->query_control_module->register_query_var(new \Elementor_OER_Page_Query());
+    $widgets_manager->register_widget_type(new \CurMyLibraryOersWidget());
 }
-add_action('elementor/init', 'register_elementor_my_library_oers_widget');
+add_action('elementor/widgets/register', 'register_elementor_my_library_oers_widget');
 
 ?>
