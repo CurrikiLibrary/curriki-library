@@ -22,9 +22,29 @@ class CurMyLibraryOersWidget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'template_id',
+            'oer_item_template_id',
             [
-                'label' => __( 'Select Template', 'curriki-library' ),
+                'label' => __( 'Set OER Item Template', 'curriki-library' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'options' => $this->get_template_options(),
+                'default' => '',
+            ]
+        );
+
+        $this->add_control(
+            'my_library_sort_template',
+            [
+                'label' => __( 'Set My Library Sort Template', 'curriki-library' ),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'options' => $this->get_template_options(),
+                'default' => '',
+            ]
+        );
+
+        $this->add_control(
+            'my_library_pagination_template',
+            [
+                'label' => __( 'Set My Library Pagination Template', 'curriki-library' ),
                 'type' => \Elementor\Controls_Manager::SELECT,
                 'options' => $this->get_template_options(),
                 'default' => '',
@@ -51,14 +71,26 @@ class CurMyLibraryOersWidget extends \Elementor\Widget_Base {
 
     protected function render() {
         $settings = $this->get_settings_for_display();
-        $templateId = $settings['template_id'] ? intval($settings['template_id']) : 0;
+        $oer_item_template_id = $settings['oer_item_template_id'] ? intval($settings['oer_item_template_id']) : 0;
+        $my_library_sort_template = $settings['my_library_sort_template'] ? intval($settings['my_library_sort_template']) : 0;
+        $my_library_pagination_template = $settings['my_library_pagination_template'] ? intval($settings['my_library_pagination_template']) : 0;
         require_once dirname(__DIR__) . '/core/my-library.php';
         $user_library = curriki_user_my_library();
         $resources = $user_library['resources'];
 
         // message if template is not selected
-        if (!$templateId) {
-            echo '<p>Please select a template to display resources.</p>';
+        if (!$oer_item_template_id) {
+            echo '<p>Please Set OER Item Template to display resources.</p>';
+            return;
+        }
+
+        if (!$my_library_sort_template) {
+            echo '<p>Please Set My Library Sort Template to display sorting option.</p>';
+            return;
+        }
+
+        if (!$my_library_pagination_template) {
+            echo '<p>Please Set My Library Pagination Template to display pagination.</p>';
             return;
         }
 
@@ -68,14 +100,21 @@ class CurMyLibraryOersWidget extends \Elementor\Widget_Base {
             return;
         }       
          
-        // iterate over $resources
+        // echo sorting template
+        echo \Elementor\Plugin::$instance->frontend->get_builder_content($my_library_sort_template);
+
+        // iterate over $resources and echo oer item template
         foreach ($resources as $resource) {
             global $myLibraryOerData;
             $myLibraryOerData = $resource;
-            if ( $templateId && !is_null($myLibraryOerData) ) {
-                echo \Elementor\Plugin::$instance->frontend->get_builder_content($templateId);
+            if ( $oer_item_template_id && !is_null($myLibraryOerData) ) {
+                echo \Elementor\Plugin::$instance->frontend->get_builder_content($oer_item_template_id);
             }
         }
+
+        global $userLibraryPagination;
+        $userLibraryPagination = $user_library['pagination'];
+        echo \Elementor\Plugin::$instance->frontend->get_builder_content($my_library_pagination_template);
     }
 }
 

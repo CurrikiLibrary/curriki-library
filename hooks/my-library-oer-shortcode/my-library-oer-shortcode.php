@@ -14,14 +14,24 @@ function my_library_oer_shortcode_fun($atts) {
     $length = intval(trim($atts['length']));
     
     global $myLibraryOerData;
-   
     // if property exists in the $myLibraryOerData object, return the value
-    if ($property == 'rate-this-resource-form') {
+    if ($property == 'library_pagination') {
+        global $userLibraryPagination;
+        $output = $userLibraryPagination;
+    } elseif ($property == 'library_sorting') {
+        require_once dirname(__DIR__) . '/core/curriki-customized.php';
+        $output = curriki_library_sorting('my', 'top', $_GET['library_sorting']);
+    } elseif ($property == 'pageurl') {
+        $output = site_url('oer/' . $myLibraryOerData['pageurl']);
+    } elseif ($property == 'edit-url') {
+        $output = get_bloginfo('url') . '/create-resource/?resourceid=' . $myLibraryOerData['resourceid'];
+    } elseif ($property == 'rate-this-resource-form') {
         require_once dirname(__DIR__) . '/core/curriki-customized.php';
         $output = curriki_library_scripts();
     } elseif ($myLibraryOerData && $property == 'custom-attributes') {
-        $output = 'oer-title|' . $myLibraryOerData['title'];
-        //$output .= '\noer:id' . $myLibraryOerData['resourceid'];
+        $output = 'oer-title|' . $myLibraryOerData['title'] . "\r\n";
+        $output .= 'oer-id|' . $myLibraryOerData['resourceid'] . "\r\n";
+        $output .= 'oer-url|' . site_url('oer/' . $myLibraryOerData['pageurl']) . "\r\n";
     } elseif ($myLibraryOerData && $property == 'resourceid') {
         $output = $myLibraryOerData['resourceid'];
     } elseif ($myLibraryOerData && $property == 'rate-this-resource-link') {

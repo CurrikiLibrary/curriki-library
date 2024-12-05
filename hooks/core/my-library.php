@@ -112,7 +112,8 @@ function curriki_user_my_library() {
         $user_library['resources'][] = $resource_data;
     }
 
-    $user_library['pagination'] = library_pagination(get_bloginfo('url') . '/my-library?library_sorting=' . $_GET['library_sorting'], $_GET['page_no'], ceil($total_resources / 10));
+    $current_page_permalink = get_permalink();
+    $user_library['pagination'] = library_pagination($current_page_permalink . '?library_sorting=' . $_GET['library_sorting'], $_GET['page_no'], ceil($total_resources / 10));
 
     return $user_library;
 }

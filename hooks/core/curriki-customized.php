@@ -1489,6 +1489,7 @@ if (isset($_GET['curriki_ajax_action']) and $_GET['curriki_ajax_action'] == 'res
   die;
 }
 
+/*
 function library_pagination($old_url, $current_page, $total_pages) {
   if ($total_pages < 2)
     return [];
@@ -1530,8 +1531,9 @@ function library_pagination($old_url, $current_page, $total_pages) {
 
   return $pagination_data;
 }
+*/
 
-/*
+
 function library_pagination($old_url, $current_page, $total_pages) {
   if ($total_pages < 2)
     return;
@@ -1563,7 +1565,7 @@ function library_pagination($old_url, $current_page, $total_pages) {
   $user_library .= '</div>';
   return $user_library;
 }
-*/
+
 
 function curriki_member_rating($rating = 0) {
   $library = "";
@@ -1659,6 +1661,7 @@ function curriki_library_scripts() {
   return ob_get_clean();
 }
 
+/*
 function curriki_library_sorting($page, $position, $selected = "", $userid = '') {
     $sorting_options = [
         'displayseqno' => '',
@@ -1700,8 +1703,9 @@ function curriki_library_sorting($page, $position, $selected = "", $userid = '')
 
     return $data;
 }
+*/
 
-/* 
+
 function curriki_library_sorting($page, $position, $selected = "", $userid = '') {
   if ($selected == 'displayseqno')
     $selected_displayseqno = ' selected="selected"';
@@ -1743,11 +1747,19 @@ function curriki_library_sorting($page, $position, $selected = "", $userid = '')
     $selected_ru = ' selected="selected"';
   else
     $selected_ru = '';
-
-  $library_sorting = '<form method="GET" action="" id="library_sorting_form-' . $position . '">';
+  
+  global $post;
+  $qs = parse_url(site_url($_SERVER['REQUEST_URI']));
+  // $qs 'query' is the query string
+  $query_string = '';
+  if ( isset($qs['query']) && !empty($qs['query']) ) {
+    $query_string = '?' . $qs['query'];
+  }
+  $action_url = get_permalink() . $query_string; //site_url($post->post_name . $_SERVER['REQUEST_URI']);
+  $library_sorting = '<form method="GET" action="' . $action_url . '" id="library_sorting_form-' . $position . '">';
   if (!empty($userid))
     $library_sorting .= '<input type="hidden" name="userid" value="' . $userid . '" />';
-  $library_sorting .= '<strong>'.__('Sort by','curriki').': </strong><select name="library_sorting" onchange="document.getElementById(\'library_sorting_form-' . $position . '\').submit();">';  
+  $library_sorting .= '<select name="library_sorting" onchange="document.getElementById(\'library_sorting_form-' . $position . '\').submit();">';  
   if ($page == 'my') {
     $library_sorting .= '<option value="mcf"' . $selected_mcf . '>'.__('My Contributions First','curriki').'</option>';
     $library_sorting .= '<option value="mff"' . $selected_mff . '>'.__('My Favorites First','curriki').'</option>';
@@ -1765,7 +1777,7 @@ function curriki_library_sorting($page, $position, $selected = "", $userid = '')
   $library_sorting .= '</select></form>';
 
   return $library_sorting;
-} */
+}
 
 function curriki_sharethis($rid, $title = '') {
   return '<a title="Share this resource with a friend" '
