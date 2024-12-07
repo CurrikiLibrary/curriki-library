@@ -21,7 +21,113 @@ function oer_page_shortcode_fun($atts) {
     global $oerPageData;
     global $oerPageDataById;
     // if property exists in the $oerPageData object, return the value
-    if ($oerPageDataById && $property == 'in-collection') {
+    if ($oerPageDataById && $property == 'reviews-reviewer-comments') {
+        require_once 'functions.php';
+        $resource = $oerPageDataById;
+        $oer_reviews_data = oer_reviews_data($resource);
+        $reviewerComments = $oer_reviews_data['reviewerComments'];
+        $resource_content = 'No reviewer comments found.';
+        if ($reviewerComments) {
+            $resource_content = '<ul class="list-rating">';
+                $resource_content .= $reviewerComments;
+            $resource_content .= '</ul>';
+        }
+        $output = $resource_content;
+    } elseif ($oerPageDataById && $property == 'reviews-component-ratings') {
+        require_once 'functions.php';
+        $resource = $oerPageDataById;
+        $oer_reviews_data = oer_reviews_data($resource);
+        $componentRatings = $oer_reviews_data['componentRatings'];
+        $resource_content = 'No component ratings found.';
+        if ($componentRatings) {
+            $resource_content = '<ul class="list-rating">';
+                $resource_content .= $componentRatings;
+            $resource_content .= '</ul>';
+        }
+        $output = $resource_content;
+    } elseif ($oerPageDataById && $property == 'reviews-curriki-rating') {
+        $resource = $oerPageDataById;
+        if (isset($resource['reviewstatus']) && $resource['reviewstatus'] == 'reviewed' && $resource['reviewrating'] != null && $resource['reviewrating'] >= 0) {
+            $resource_content .= '<p>'.__('This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ','curriki') . $resource['reviewrating'] . ', '.__('as of','curriki').' ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+        } elseif (isset($resource['reviewstatus']) && $resource['reviewstatus'] == 'reviewed' && $resource['reviewrating'] != null && $resource['reviewrating'] < 0) {
+            $resource_content .= '<p>'.__('This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ','curriki') . '(-)' . ' '.__('as of','curriki').' ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+        } elseif (isset($resource['partner']) && $resource['partner'] == 'T') {
+            //$resource_content .= '<p>This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ' . '(-)' . ' as of ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+        } elseif (isset($resource['partner']) && $resource['partner'] == 'C') {
+            //$resource_content .= '<p>This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ' . '(-)' . ' as of ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+        } else {
+            $resource_content .= '<p>'.__('This resource has not yet been reviewed.','curriki').'</p>';
+        }
+        $output = $resource_content;
+    } elseif ($oerPageDataById && $property == 'in-collection-link') {
+        $resource = $oerPageDataById;
+        $resource_content = 'Not in collection';
+        $output = '';
+        // if ul_class and heading_class are set, make relevant variables with values
+        $ul_class = $atts['ul_class'] ? ' class="' . esc_attr($atts['ul_class']) . '"' : '';
+        $li_icon_class = $atts['li_icon_class'] ? ' class="' . esc_attr($atts['li_icon_class']) . '"' : '';
+        $heading_tag = $atts['heading_tag'] ? esc_attr($atts['heading_tag']) : 'h4';
+        $heading_class = $atts['heading_class'] ? ' class="' . esc_attr($atts['heading_class']) . '"' : '';
+        $heading_icon_class = $atts['heading_icon_class'] ? ' class="' . esc_attr($atts['heading_icon_class']) . '"' : '';
+
+        if (!isset($_GET['viewer']) && (isset($resource["toc_persist"]) && count($resource["toc_persist"]) > 0 || (isset($resource['collection']) && count($resource['collection']) > 0))) {
+            if(!empty($resource['collections_resource_blogngs_to'])) {                
+                foreach($resource['collections_resource_blogngs_to'] as $resourceItem){
+                    $url = site_url() . "/oer/".$resourceItem->pageurl;
+                    $resource_content = '<a href="' . $url . '"><i'. $li_icon_class .'></i> ' . $resourceItem->title . '</a>';
+                }   
+            }
+        }
+        $output = $resource_content;
+    } elseif ($oerPageDataById && $property == 'license-name') {
+        $resource = $oerPageDataById;
+        $license = isset($resource['licenseName']) ? $resource['licenseName'] : '---';
+        $output = $license;
+    }elseif ($oerPageDataById && $property == 'access') {
+        $resource = $oerPageDataById;
+        $access = isset($resource['access']) ? ucwords($resource['access']) : '---';
+        $output = $access;
+    } elseif ($oerPageDataById && $property == 'language') {
+        $resource = $oerPageDataById;
+        $language = isset($resource['languageName']) ? $resource['languageName'] : '---';
+        $output = $language;
+    } elseif ($oerPageDataById && $property == 'educationlevels') {
+        $resource = $oerPageDataById;
+        $educationlevel_list = '---';
+        if (isset($resource['educationlevels']) && count($resource['educationlevels']) > 0) {
+            $educationlevel_list = '<ul class="list-level">';
+            if (isset($resource['educationlevels']))
+                foreach ($resource['educationlevels'] as $educationlevel)
+                    $educationlevel_list .= '<li>' . $educationlevel . '</li>';
+            $educationlevel_list .= '</ul>';   
+        }
+        $output = $educationlevel_list;
+    } elseif ($oerPageDataById && $property == 'keywords') {
+        $resource = $oerPageDataById;
+        $keywords = isset($resource['keywords']) ? $resource['keywords'] : '---';
+        $output = $keywords;
+    } elseif ($oerPageDataById && $property == 'subjects') {
+        $resource = $oerPageDataById;
+        $subjects_array = count($resource['subjects']) > 0 ? $resource['subjects'] : [];
+        // $subjects_list with ul and li tags
+        $subjects_list = '<ul class="list-level">';
+        foreach ($subjects_array as $subject) {
+            $subjects_list .= '<li>' . $subject . '</li>';
+        }
+        $subjects_list .= '</ul>';
+        $output = $subjects_list;
+    } elseif ($oerPageDataById && $property == 'description-text') {
+        $resource = $oerPageDataById;
+        $output = strip_tags(html_entity_decode($resource['description']));
+    } elseif ($oerPageDataById && $property == 'type-name') {
+        $resource = $oerPageDataById;
+        $typeName = [];
+        if (isset($resource['typeName']))
+            foreach ($resource['typeName'] as $type)                
+                $typeName[] = $type['typeName'];
+        $typeName = count($typeName) > 0 ? implode(', ', $typeName) : '---';
+        $output = $typeName;
+    } elseif ($oerPageDataById && $property == 'in-collection') {
         $resource = $oerPageDataById;
         $resource_content = 'Not in collection';
         $output = '';
