@@ -21,7 +21,14 @@ function oer_page_shortcode_fun($atts) {
     global $oerPageData;
     global $oerPageDataById;
     // if property exists in the $oerPageData object, return the value
-    if ($oerPageDataById && $property == 'reviews-reviewer-comments') {
+    if ($oerPageDataById && $property == 'add-to-library-modal') {
+        $resource = $oerPageDataById;
+        // require_one for one directory up and core/oer/cusomt-functions.php file path
+        require_once dirname(__FILE__) . '/../core/oer/modals.php';
+        require_once dirname(__FILE__) . '/../core/oer/ajax-actions.php';
+        var_dump( function_exists('curr_add_to_library_modal') );
+        $output = 'library ...';
+    } elseif ($oerPageDataById && $property == 'reviews-reviewer-comments') {
         require_once 'functions.php';
         $resource = $oerPageDataById;
         $oer_reviews_data = oer_reviews_data($resource);
@@ -47,14 +54,17 @@ function oer_page_shortcode_fun($atts) {
         $output = $resource_content;
     } elseif ($oerPageDataById && $property == 'reviews-curriki-rating') {
         $resource = $oerPageDataById;
+        $resource_content = '';
         if (isset($resource['reviewstatus']) && $resource['reviewstatus'] == 'reviewed' && $resource['reviewrating'] != null && $resource['reviewrating'] >= 0) {
             $resource_content .= '<p>'.__('This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ','curriki') . $resource['reviewrating'] . ', '.__('as of','curriki').' ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
         } elseif (isset($resource['reviewstatus']) && $resource['reviewstatus'] == 'reviewed' && $resource['reviewrating'] != null && $resource['reviewrating'] < 0) {
             $resource_content .= '<p>'.__('This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ','curriki') . '(-)' . ' '.__('as of','curriki').' ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
         } elseif (isset($resource['partner']) && $resource['partner'] == 'T') {
-            //$resource_content .= '<p>This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ' . '(-)' . ' as of ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+            // $resource_content .= '<p>This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ' . '(-)' . ' as of ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+            $resource_content .= '<p>Not Available</p>';
         } elseif (isset($resource['partner']) && $resource['partner'] == 'C') {
-            //$resource_content .= '<p>This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ' . '(-)' . ' as of ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+            // $resource_content .= '<p>This resource was reviewed using the Curriki Review rubric and received an overall Curriki Review System rating of ' . '(-)' . ' as of ' . date("Y-m-d", strtotime($resource['lastreviewdate'])) . '.</p>';
+            $resource_content .= '<p>Not Available</p>';
         } else {
             $resource_content .= '<p>'.__('This resource has not yet been reviewed.','curriki').'</p>';
         }
