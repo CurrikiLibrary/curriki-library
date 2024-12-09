@@ -281,15 +281,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                                  node.addNode(window.new_node, data.hitMode);
                                  node.parent.removeChild(no_record_obj);
                                  */
-                                var resource_id_val = 0;
-                                if (jQuery("input[name='resourceid']").get().length > 0)
-                                {
-                                    resource_id_val = jQuery("input[name='resourceid']").val().toString();
-                                } else {
-
-                                    resource_id_val = jQuery("#rid_mdl").val().toString();
-                                }
-
+                                var resource_id_val = <?php echo $resourceid; ?>;
                                 node.parent.children[0]['title'] = title;
                                 //node.parent.children[0]['key'] = jQuery("input[name='resourceid']").val().toString();
                                 node.parent.children[0]['key'] = resource_id_val;
@@ -302,14 +294,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                             } else if (node.parent.getChildren().length > 0 && no_record_obj === null)
                             {
 
-                                var resource_id_val = 0;
-                                if (jQuery("input[name='resourceid']").get().length > 0)
-                                {
-                                    resource_id_val = jQuery("input[name='resourceid']").val().toString();
-                                } else {
-
-                                    resource_id_val = jQuery("#rid_mdl").val().toString();
-                                }
+                                var resource_id_val = <?php echo $resourceid; ?>;
                                 window.new_node = {'title': title, 'key': resource_id_val, 'resourceid': resource_id_val};
 
                                 if (node.data.hasOwnProperty("ExtendedNode") && node.data.ExtendedNode === 1)
@@ -328,15 +313,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
 
                                 //=== Case Add new node in all cases ============
 
-                                var resource_id_val = 0;
-                                if (jQuery("input[name='resourceid']").get().length > 0)
-                                {
-                                    resource_id_val = jQuery("input[name='resourceid']").val().toString();
-                                } else {
-
-                                    resource_id_val = jQuery("#rid_mdl").val().toString();
-                                }
-
+                                var resource_id_val = <?php echo $resourceid; ?>;
                                 if (node.data.hasOwnProperty("ExtendedNode") && node.data.ExtendedNode === 1)
                                 {
                                     window.new_node["ExtendedNode"] = 1;
