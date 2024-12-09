@@ -4,23 +4,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-global $bp, $wpdb;
-if (empty($_REQUEST['pageurl']))
-    $_REQUEST['pageurl'] = '';
-if (empty($_REQUEST['rid']))
-    $_REQUEST['rid'] = '';
-$pageurl = str_replace("/", "", $_REQUEST['pageurl']);
-$rid = str_replace("/", "", $_REQUEST['rid']);
-$q_resource = "";
-$resourceid = 0;
-if (strlen($pageurl) > 0) {
-    $q_resource = "SELECT * FROM resources WHERE pageurl = '" . $pageurl . "'";
-    $resource = $wpdb->get_row($q_resource);
-    $resourceid = $resource->resourceid;
-} elseif (strlen($rid) > 0) {
-    $resourceid = $rid;
-}
 
+global $oerPageDataById;
+$resource = null;
+$resourceid = 0;
+if ($oerPageDataById) {
+    $resource = $oerPageDataById;
+    $resourceid = $resource['resourceid'];
+} else {
+    global $wpdb;
+    if (empty($_REQUEST['pageurl']))
+    $_REQUEST['pageurl'] = '';
+    if (empty($_REQUEST['rid']))
+        $_REQUEST['rid'] = '';
+    $pageurl = str_replace("/", "", $_REQUEST['pageurl']);
+    $rid = str_replace("/", "", $_REQUEST['rid']);
+    $q_resource = "";
+    if (strlen($pageurl) > 0) {
+        $q_resource = "SELECT * FROM resources WHERE pageurl = '" . $pageurl . "'";
+        $resource = $wpdb->get_row($q_resource);
+        $resourceid = $resource->resourceid;
+    } elseif (strlen($rid) > 0) {
+        $resourceid = $rid;
+    }
+}
 
 $pages_to_load_script = array("oer");
 $pagename = get_query_var('pagename');
@@ -498,7 +505,6 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
 
 
 <script type="text/javascript">
-
     function load_add_to_lib_modal(rid)
     {
         rid = rid || "";
@@ -514,7 +520,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
 
         if (page_name === "oer")
         {
-            var rsource_name = jQuery(".resource-title").text();
+            var rsource_name = "<?php echo $resource["title"]; ?>";
             jQuery("#resource-title-modal").text(rsource_name);
         } else if (page_name === "search" || page_name === "search-page" || page_name === "resources-curricula")
         {
@@ -544,7 +550,6 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
 
         renderMyLibraryTree();
     }
-
 
     //*******************************
     var add_to_lib_pre_call_end = false;
@@ -579,11 +584,8 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
             add_to_lib_pre_call_end_sr_page = true;
         });
         jQuery(document).on('click', '.add-to-library', function () {
-            
-            //console.log( "rid-fld ===> " , jQuery(this).attr("rid-fld") );
             add_to_lib_pre_call_end = true;            
             var r_hd = jQuery(this).parents(".post").find(".post-content h4 a:eq(0)").text();
-//            var rid_mdl = jQuery(this).parents(".collection-card").find(".collection-body-inner h3 .rid-fld").val();
             var rid_mdl = jQuery(this).attr("rid-fld");
             jQuery("#resource_title_mdl").val(r_hd);
             
@@ -592,6 +594,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
             jQuery("#rid_mdl").val(rid_mdl);
         });
 
+        /*
         jQuery(document).ajaxComplete(function () {
 
             if (add_to_lib_pre_call_end_sr_page == true)
@@ -604,7 +607,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
             }
 
         });
-
+        */
 
         /*jQuery.fn.centerLibModal = function () {
             var h = jQuery(this).height();
@@ -715,7 +718,8 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
          }
          });*/
 
-    });</script>
+    });
+</script>
 
 
 <style type="text/css">    
@@ -765,7 +769,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
 
     .resource-drag-drop-wrapper
     {
-/*        width: 380px;*/
+
         border: 0px solid red;
         padding: 6px;
     }
@@ -773,8 +777,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
     {
         border: 2px dashed #99c736;
         padding: 6px;
-/*        height: 30px;
-        min-width: 315px;*/
+
     }
 
     #draggable-resource p
@@ -866,13 +869,22 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
     .fa-in-desc{ font-size: 15px; }
 
     .tree-root-node{font-size: 16px;}
+
+    .add-to-lib-left {
+        width:35%;
+        float:left;
+    }
+    .add-to-lib-right {
+        width:65%;
+        float:left;
+    }
+
 </style>
 
-<div id="app-container" ng-app="ngappmodal" ng-controller="libModalCtrl" ng-init="rid =<?php echo $resourceid ?>" >
+<div id="app-container" ng-app="ngappmodal" ng-controller="libModalCtrl" ng-init="rid =<?php echo $resourceid; ?>" >
 
-    <div id="add-to-lib-dialog" class="my-library-modal modal border-grey rounded-borders-full container_12x" style="display: none;max-width: 1360px;">
+    <div id="add-to-lib-dialog">
 
-        <h3 class="modal-title"><?php echo __('Add Resource to My Library', 'curriki'); ?></h3>
         <div class="sort-wrapper">
             <!-- Sort By: <a class="sort-btn" ng-class="{'sort-btn-bold' : sort_by == 'most_recent'}" onclick="sortCollections('most_recent')">Most Recent</a>  | <a class="sort-btn" ng-class="{'sort-btn-bold': sort_by ==  'a_to_z'}" onclick="sortCollections('a_to_z')">A-Z</a> | <a class="sort-btn" ng-class="{'sort-btn-bold': sort_by == 'z_to_a'}" onclick="sortCollections('z_to_a')">Z-A</a> -->
         </div>

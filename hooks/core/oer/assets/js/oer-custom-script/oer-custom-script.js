@@ -98,7 +98,7 @@ jQuery(document).ready(function () {
         jQuery(obj).attr("href",href+resource_url_str);                
     });
     
-    loadRecommenderWidget();
+    // loadRecommenderWidget();
     initProgressMonitorFancyBoxes();
     initProgressMonitorBars();
 });
@@ -199,7 +199,7 @@ function initProgressMonitorBars(){
 }
 
 function initProgressMonitorFancyBoxes(){
-
+    /*
     jQuery("#fancyBoxInlineAfterRegister").fancybox({
         'transitionIn': 'elastic',
         'transitionOut': 'elastic',
@@ -210,6 +210,7 @@ function initProgressMonitorFancyBoxes(){
             window.location = window.location.origin+"/oer/"+jQuery("#pageurl_param").val();
         }
     });
+    */
     
     jQuery( "#accordion-program" ).accordion({      
         header: "div.playlist-accordion",
@@ -220,6 +221,7 @@ function initProgressMonitorFancyBoxes(){
         }
     });
 
+    /*
     jQuery("#fancyBoxInlineProgressMonitor").fancybox({
         'transitionIn': 'elastic',
         'transitionOut': 'elastic',
@@ -227,7 +229,7 @@ function initProgressMonitorFancyBoxes(){
         'speedOut': 200,
         'overlayShow': true
     });  
-
+    */
     jQuery('.open-progress-link').click( function(e){ 
         e.preventDefault();             
         jQuery('#fancyBoxInlineProgressMonitor').trigger("click");

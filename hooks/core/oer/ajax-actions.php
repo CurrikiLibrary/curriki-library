@@ -25,25 +25,21 @@ function curr_set_global_vars()
 
 
 function curr_add_to_library_modal($error = ''){     
-        
     global $wpdb , $bp;      
     $pagename = get_query_var('pagename');     
-    
+    $model_screen = "";
     if(is_user_logged_in())
-    {
-        
-                
+    {        
         $allowed_pages = array("oer","search","search-page","resources-curricula","community-pages-search");
         //$allowed_pages = array("oer");                    
         if(isset($pagename) && $pagename!=null && in_array($pagename, $allowed_pages))
         {              
             ob_start();
-            include("modals.php");
-            $model_screen = ob_get_contents();
-            ob_end_clean();
-            echo $model_screen;
+            require_once "modals.php";
+            return ob_get_clean();
         }
         
+        /*
         $allowed_page_changepassword = array("edit-profile");
         //$allowed_pages = array("oer");                            
         if(isset($pagename) && $pagename!=null && in_array($pagename, $allowed_page_changepassword))
@@ -104,8 +100,9 @@ function curr_add_to_library_modal($error = ''){
             }                        
         }                    
         //=== [end] Group Modal ====
-        
+        */
     }else{
+        /*
         //===== Page-Resource process if user not logged-in========
         $allowed_pages = array("oer");        
         if(isset($pagename) && $pagename!=null && in_array($pagename, $allowed_pages))
@@ -113,11 +110,43 @@ function curr_add_to_library_modal($error = ''){
             wp_enqueue_style('oer-custom-style', get_stylesheet_directory_uri() . '/js/oer-custom-script/oer-custom-style.css');
             wp_enqueue_script('oer-custom-script', get_stylesheet_directory_uri() . '/js/oer-custom-script/oer-custom-script.js', array('jquery'), false, true);
         }
+        */
     } 
     
-    initialize_modals();
+    // initialize_modals();
+    return $model_screen;
 }
 
+function initialize_modals()
+{
+    $allowed_pages = array("oer");
+    $pagename = get_query_var('pagename');        
+    if(isset($pagename) && $pagename!=null && in_array($pagename, $allowed_pages))
+    { 
+        wp_enqueue_style('jquery-progress-css', get_stylesheet_directory_uri() . '/js/oer-custom-script/progress.css');
+        wp_enqueue_script('jquery-progress-js', includes_url('js/jquery/ui/progressbar.min.js'), array('jquery'), false, true);
+    }
+    
+    //======= For logged-in users ======
+    if(is_user_logged_in())
+    {
+        initialize_complete_profile_modal();
+    }else{
+        //======= For non-logged-in users ======   
+    }
+}
+
+function initialize_complete_profile_modal()
+{
+    $pagename = get_query_var('pagename');
+    $allowed_page_dashboard = array("dashboard");
+    
+    if( isset($pagename) && $pagename!=null && in_array($pagename, $allowed_page_dashboard) )
+    {
+        // require_once( realpath(__DIR__ . "/../complete-profile-modal.php") );
+    } 
+     
+}
 
 add_action('wp_ajax_nopriv_get_user_library_collection', 'ajax_get_user_library_collection');
 add_action('wp_ajax_get_user_library_collection', 'ajax_get_user_library_collection');
