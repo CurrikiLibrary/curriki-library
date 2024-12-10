@@ -22,11 +22,8 @@ function oer_page_shortcode_fun($atts) {
     global $oerPageDataById;
     // if property exists in the $oerPageData object, return the value
     if ($oerPageDataById && $property == 'add-to-library-modal') {
-        // $resource = $oerPageDataById;
-        // require_one for one directory up and core/oer/cusomt-functions.php file path
-        // require_once dirname(__FILE__) . '/../core/oer/modals.php';
         require_once dirname(__FILE__) . '/../core/oer/ajax-actions.php';
-        // var_dump( function_exists('curr_add_to_library_modal') );
+        require_once 'functions.php';
         $output = curr_add_to_library_modal();
     } elseif ($oerPageDataById && $property == 'reviews-reviewer-comments') {
         require_once 'functions.php';

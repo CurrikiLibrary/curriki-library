@@ -92,4 +92,57 @@ function oer_reviews_data($resource) {
     $data['newRatings'] = $newRatings;
     return $data;
 }
+
+
+
+function curr_add_to_library_modal($error = ''){     
+    global $wpdb , $bp;      
+    $pagename = get_query_var('pagename');     
+    $model_screen = "";
+    if(is_user_logged_in())
+    {        
+        $allowed_pages = array("oer","search","search-page","resources-curricula","community-pages-search");
+        //$allowed_pages = array("oer");                    
+        if(isset($pagename) && $pagename!=null && in_array($pagename, $allowed_pages))
+        {              
+            ob_start();
+            require_once "add-to-library-modal.php";
+            return ob_get_clean();
+        }   
+    }
+    // initialize_modals();
+    return $model_screen;
+}
+
+function initialize_modals()
+{
+    $allowed_pages = array("oer");
+    $pagename = get_query_var('pagename');        
+    if(isset($pagename) && $pagename!=null && in_array($pagename, $allowed_pages))
+    { 
+        wp_enqueue_style('jquery-progress-css', get_stylesheet_directory_uri() . '/js/oer-custom-script/progress.css');
+        wp_enqueue_script('jquery-progress-js', includes_url('js/jquery/ui/progressbar.min.js'), array('jquery'), false, true);
+    }
+    
+    //======= For logged-in users ======
+    if(is_user_logged_in())
+    {
+        initialize_complete_profile_modal();
+    }else{
+        //======= For non-logged-in users ======   
+    }
+}
+
+function initialize_complete_profile_modal()
+{
+    $pagename = get_query_var('pagename');
+    $allowed_page_dashboard = array("dashboard");
+    
+    if( isset($pagename) && $pagename!=null && in_array($pagename, $allowed_page_dashboard) )
+    {
+        // require_once( realpath(__DIR__ . "/../complete-profile-modal.php") );
+    } 
+     
+}
+
 ?>

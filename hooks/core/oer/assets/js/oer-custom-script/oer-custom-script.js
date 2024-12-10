@@ -50,8 +50,8 @@ jQuery(document).ready(function () {
     jQuery('.curriki-rating-title-text,.rating-badge').qtip({
         content: {
           text: function(event, api){                            
-              var qtip_text_new = jQuery(api.elements.target).next().html();
-              return qtip_text_new;
+            var qtip_text_new = jQuery('.hidden-qtip').html(); //jQuery(api.elements.target).next().html();
+            return qtip_text_new;
           },
         },
         style: {classes: 'qtipCustomClass'}

@@ -26,4 +26,13 @@ function oer_toc_display_check( $element ) {
 }
 add_action( 'elementor/frontend/before_render', 'oer_toc_display_check' );
 
+function oer_page_widget_after_display( $element ) {
+    if ($element->get_name() === 'oer-page-widget') {
+        wp_enqueue_style('oer-custom-style', plugins_url('/core/oer/assets/js/oer-custom-script/oer-custom-style.css', dirname(__FILE__)));
+        wp_enqueue_script('oer-custom-script', plugins_url('/core/oer/assets/js/oer-custom-script/oer-custom-script.js', dirname(__FILE__)), array(), false, true);
+    }
+}
+add_action( 'elementor/frontend/after_render', 'oer_page_widget_after_display' );
+
+
 ?>

@@ -33,27 +33,23 @@ $pages_to_load_script = array("oer");
 $pagename = get_query_var('pagename');
 if (isset($pagename) && $pagename != null && in_array($pagename, $pages_to_load_script)) {
     wp_enqueue_script('angular', '//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js', array('jquery'), false, true); // Not using imagesLoaded? :( Okay... then this.
-    wp_enqueue_style('nprog-css', plugins_url('/assets/css/nprogress.css', __FILE__), null, false, 'all'); // Add the styles first, in the <head> (last parameter false, true = bottom of page!)
-    wp_enqueue_script('nprog-js', plugins_url('/assets/js/nprogress.js', __FILE__), array('angular'), false, true); // Not using imagesLoaded? :( Okay... then this.    
+    wp_enqueue_style('nprog-css', plugins_url('/core/oer/assets/css/nprogress.css', dirname(__FILE__)), null, false, 'all'); // Add the styles first, in the <head> (last parameter false, true = bottom of page!)
+    wp_enqueue_script('nprog-js', plugins_url('/core/oer/assets/js/nprogress.js', dirname(__FILE__)), array('angular'), false, true); // Not using imagesLoaded? :( Okay... then this.    
 }
 
 //wp_enqueue_script('ng-sortabl', "//rawgithub.com/angular-ui/ui-sortable/master/src/sortable.js", array('angular'), false, true);
-wp_enqueue_script('ng-ctrlr-modal', plugins_url('/assets/custom/js/app/controllers.js', __FILE__), array('angular'), false, true);
-
-wp_enqueue_style('oer-custom-style', plugins_url('/assets/js/oer-custom-script/oer-custom-style.css', __FILE__));
-wp_enqueue_script('oer-custom-script', plugins_url('/assets/js/oer-custom-script/oer-custom-script.js', __FILE__), array(), false, true);
-
+wp_enqueue_script('ng-ctrlr-modal', plugins_url('/core/oer/assets/custom/js/app/controllers.js', dirname(__FILE__)), array('angular'), false, true);
 
 wp_enqueue_script('jquery-ui', 'https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js' , array('jquery'), false, true);
 
-wp_enqueue_style('ui-fancytree', plugins_url('/assets/js/fancytree/src/skin-win7/ui.fancytree.css', __FILE__), array(), '1.0.0', 'all');
-wp_enqueue_script('fancytree', plugins_url('/assets/js/fancytree/src/jquery.fancytree.js', __FILE__), array('jquery'), false, true);
-wp_enqueue_script('fancytree-columnview', plugins_url('/assets/js/fancytree/src/jquery.fancytree.columnview.js', __FILE__), array('jquery'), false, true);
-wp_enqueue_script('fancytree-dnd', plugins_url('/assets/js/fancytree/src/jquery.fancytree.dnd.js', __FILE__), array('jquery'), false, true);
-wp_enqueue_script('fancytree-table', plugins_url('/assets/js/fancytree/src/jquery.fancytree.table.js', __FILE__), array('jquery'), false, true);
-wp_enqueue_script('fancytree-glyph', plugins_url('/assets/js/fancytree/src/jquery.fancytree.glyph.js', __FILE__), array('jquery'), false, true);
-wp_enqueue_style('prettify-css', plugins_url('/assets/js/fancytree/lib/prettify.css', __FILE__), array(), '1.0.0', 'all');
-wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.js', __FILE__), array('jquery'), false, true);
+wp_enqueue_style('ui-fancytree', plugins_url('/core/oer/assets/js/fancytree/src/skin-win7/ui.fancytree.css', dirname(__FILE__)), array(), '1.0.0', 'all');
+wp_enqueue_script('fancytree', plugins_url('/core/oer/assets/js/fancytree/src/jquery.fancytree.js', dirname(__FILE__)), array('jquery'), false, true);
+wp_enqueue_script('fancytree-columnview', plugins_url('/core/oer/assets/js/fancytree/src/jquery.fancytree.columnview.js', dirname(__FILE__)), array('jquery'), false, true);
+wp_enqueue_script('fancytree-dnd', plugins_url('/core/oer/assets/js/fancytree/src/jquery.fancytree.dnd.js', dirname(__FILE__)), array('jquery'), false, true);
+wp_enqueue_script('fancytree-table', plugins_url('/core/oer/assets/js/fancytree/src/jquery.fancytree.table.js', dirname(__FILE__)), array('jquery'), false, true);
+wp_enqueue_script('fancytree-glyph', plugins_url('/core/oer/assets/js/fancytree/src/jquery.fancytree.glyph.js', dirname(__FILE__)), array('jquery'), false, true);
+wp_enqueue_style('prettify-css', plugins_url('/core/oer/assets/js/fancytree/lib/prettify.css', dirname(__FILE__)), array(), '1.0.0', 'all');
+wp_enqueue_script('prettify-js', plugins_url('/core/oer/assets/js/fancytree/lib/prettify.js', dirname(__FILE__)), array('jquery'), false, true);
 ?>
 
 <script type="text/javascript">
@@ -154,28 +150,6 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                         return true;
                     },
                     dragEnter: function (node, data) {
-
-                        // Prevent dropping a parent below another parent (only sort
-                        // nodes under the same parent)
-                        /*
-                         if(node.hasOwnProperty("otherNode") && node.parent !== data.otherNode.parent){                                                                                                
-                         return false;
-                         }
-                         */
-
-                        /*
-                         var returnVal = false;
-                         if( node.parent.data.hasOwnProperty("Source") && (node.parent.data.Source === "My Collections" || node.parent.data.Source === "My Groups") )
-                         {
-                         // Don't allow dropping *over* a node (would create a child)
-                         returnVal = ["before", "after"];                                                                                       
-                         //returnVal =  true;                                                                                        
-                         }else{
-                         returnVal =  false;                                           
-                         }
-                         return returnVal;
-                         */
-
                         //console.log("data **** " , jQuery(data.draggable.element).attr("id") );
                         var returnVal = false;
                         if ((node.parent.data.hasOwnProperty("Source") && (node.parent.data.Source === "My Collections" || node.parent.data.Source === "My Groups")) || (node.data.hasOwnProperty("ExpandableNode") === true && node.data.ExpandableNode.toString() === "1") || (node.data.hasOwnProperty("ExtendedNodeType") === true && node.data.ExtendedNodeType === "resource") || (node.data.hasOwnProperty("ExtendedNode") === true && node.data.ExtendedNode === 1))
@@ -198,15 +172,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                         //return true;
                     },
                     dragDrop: function (node, data) {
-
-
-                        //console.log("SOURCE ==== ",node.parent.data.Source);
-                        //console.log("NODE KEY ==== " , node.key);                                         
-                        //console.log("PARENT CHILDS ==== ", node.parent.children);                                                                                
                         var title = jQuery(data.draggable.element).text().toString().trim();
-
-
-
                         var child_to_remove = null;
                         var child_to_remove_is_last_child = false;
                         var no_record_obj = null;
@@ -214,11 +180,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                         var is_dropped_on_same_position = false;
 
                         //jQuery(node.parent.getChildren()).each(function(i,obj){
-                        jQuery(node.parent.children).each(function (i, obj) {
-
-
-
-                            //if(obj.title.toString().trim() === title || (obj.data.hasOwnProperty("no_record") && obj.data.no_record === 1) )                                                                                                  
+                        jQuery(node.parent.children).each(function (i, obj) {                            
                             if (obj.title.toString().trim() === title)
                             {
                                 child_to_remove = obj;
@@ -231,12 +193,8 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                                 {
                                     is_dropped_on_same_position = true;
                                 }
-                                //child_to_remove_is_last_child = (obj.key.toString().trim() === (node.parent.getChildren().length -1)) ? true : false;                                                     
-                                //console.log("child_to_remove_is_last_child "  , child_to_remove_is_last_child);
-                                //console.log("child_to_remove_is_last_child ** Detail ** " + i , node.parent.getChildren().length -1);                                                     
                             }
 
-                            //console.log("************ NO REC OBJ = " , obj.data);
                             if (obj.data.hasOwnProperty("no_record") && obj.data.no_record === 1)
                             {
                                 no_record_obj = obj;
@@ -250,16 +208,7 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                             alert("You are trying to drop resource on same position!");
                             return false;
                         }
-                        /*
-                         if(child_to_remove_is_last_child)
-                         {
-                         alert("You are trying to drop resource on same position!");
-                         return false;
-                         }
-                         */
-
-                        //console.log("getChildren() legth = " , node.parent.getChildren().length);
-
+                        
                         if (child_to_remove && node.parent.getChildren().length > 1)
                         {
                             node.parent.removeChild(child_to_remove);
@@ -276,11 +225,6 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
 
                             if (node.parent.getChildren().length === 1 && no_record_obj) {
                                 //=== Case to remove "Now record found!" =======
-                                /*
-                                 window.new_node = {title: title,resourceid:jQuery("input[name='resourceid']").val().toString(),is_new:true , parent:no_record_obj_parent};
-                                 node.addNode(window.new_node, data.hitMode);
-                                 node.parent.removeChild(no_record_obj);
-                                 */
                                 var resource_id_val = <?php echo $resourceid; ?>;
                                 node.parent.children[0]['title'] = title;
                                 //node.parent.children[0]['key'] = jQuery("input[name='resourceid']").val().toString();
@@ -288,9 +232,6 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                                 node.parent.render(true, true);
 
                                 window.new_node_for_no_record = node.parent.children[0];
-
-
-                                //console.log("children ---> " , node.parent.children[0]['title']);                                                    
                             } else if (node.parent.getChildren().length > 0 && no_record_obj === null)
                             {
 
@@ -856,15 +797,18 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
         float:left;
     }
 
+    .rounded-borders-full {
+        border-radius: 8px;
+    }
+
+    .border-grey {
+        border: 1px solid #D1D1D1;
+    }
+
 </style>
 
 <div id="app-container" ng-app="ngappmodal" ng-controller="libModalCtrl" ng-init="rid =<?php echo $resourceid; ?>" >
-
     <div id="add-to-lib-dialog">
-
-        <div class="sort-wrapper">
-            <!-- Sort By: <a class="sort-btn" ng-class="{'sort-btn-bold' : sort_by == 'most_recent'}" onclick="sortCollections('most_recent')">Most Recent</a>  | <a class="sort-btn" ng-class="{'sort-btn-bold': sort_by ==  'a_to_z'}" onclick="sortCollections('a_to_z')">A-Z</a> | <a class="sort-btn" ng-class="{'sort-btn-bold': sort_by == 'z_to_a'}" onclick="sortCollections('z_to_a')">Z-A</a> -->
-        </div>
         <div class="add-to-lib-left">
 
             <?php
@@ -892,114 +836,6 @@ wp_enqueue_script('prettify-js', plugins_url('/assets/js/fancytree/lib/prettify.
                     <div id="tree"></div>
                 </div>            
             </div>
-            <!--        
-                  <div class="my-library-folders rounded-borders-full border-grey scrollbar">
-                    <div ng-repeat="topTreeObj in libraryTopTree">
-                        
-                        <span class="treeTopLevelClass" ng-class="{true:'fa fa-caret-down',false:'fa fa-caret-right'}[libraryTopTreeSelectedValue == topTreeObj]"></span><a href="#" ng-click="setTopTreeSelectedItem(topTreeObj)">{{topTreeObj}}</a>                        
-                        
-            
-                        <div ng-if="libraryTopTreeSelectedValue=='My Collections'" ng-repeat="rsObj in resourcesArr" ng-show="rsObj.Source==topTreeObj" ng-class="{true:'', false: 'hide-collections'}[libraryTopTreeSelectedValue == topTreeObj]">
-                            <a class="toc-selection cls-{{rsObj.RID}}" ng-click="setCurrentCollection(rsObj.RID)"><h4 class="toc-collection-folder" ng-class="{'selected-collection': rsObj.RID == selected_collection}"><span class="fa" ng-class="{true:'fa-folder-open', false: 'fa-folder'}[rsObj.RID == selected_collection]"></span> <span ng-bind="rsObj.Collection"></span></h4></a>
-                            <ul id="my-collections-ul" class="fa fa-ul toc-collection toc-folder cls-{{rsObj.RID}}" ng-hide="rsObj.RID != selected_collection">
-                                <li class="toc-file toc-image li-{{rsLiObj.ColRid}}" ng-repeat="rsLiObj in resources_of_current_collection" ng-click="setCurrentResource(rsLiObj.ColRid, rsLiObj.displayseqno)" ng-class="{'selected-resource': rsLiObj.ColRid == selected_resource}">  <div class="droppable dno-{{rsLiObj.displayseqno}} rid-{{rsLiObj.ColRid}} tree-level-resource cls-cntr{{rsLiObj.RID}}" ng-class="{true:'isNew',false:''}[rsLiObj.hasOwnProperty('isNew') && rsLiObj.isNew == true]" droppable> <span class="fa fa-li fa-file-image-o"></span> <span ng-class="{true: 'mark-blod', false: 'mark-unblod'}[rsLiObj.ColRid == rid]" ng-bind="rsLiObj.Resource"></span> </div> </li>
-                            </ul>
-                        </div>            
-                        
-            
-                        <div ng-if="libraryTopTreeSelectedValue=='My Groups'" ng-repeat="rsObjG in groupsArr" ng-show="rsObjG.Source==topTreeObj" class="groups-wrapper">
-                            <a class="toc-selection cls-{{rsObjG.id}}" ng-click="setCurrentGroup(rsObjG.id)"><h4 class="toc-collection-folder" ng-class="{'selected-collection': rsObjG.id == selected_group}"><span class="fa" ng-class="{true:'fa-group', false: 'fa-group'}[rsObjG.id == selected_group]"></span> <span ng-bind="rsObjG.name"></span></h4></a>
-                            
-            
-                            <div ng-if="libraryTopTreeSelectedValue=='My Groups'" ng-repeat="rsObj in resourcesArr" ng-show="rsObjG.id.toString()==selected_group.toString()" ng-class="{true:'', false: 'hide-collections'}[rsObjG.id.toString()== selected_group.toString()]" class="groups-resources-wrapper">
-                                
-                                <a ng-if="rsObj.type == 'collection'" class="toc-selection cls-{{rsObj.RID}}" ng-click="setCurrentCollection(rsObj.RID)"><h4 class="toc-collection-folder" ng-class="{'selected-collection': rsObj.RID == selected_collection}"><span class="fa" ng-class="{true:'fa-folder-open', false: 'fa-folder'}[rsObj.RID == selected_collection]"></span> <span ng-bind="rsObj.Collection"></span></h4></a>
-                                
-                                <div ng-if="rsObj.type == 'resource'" class="droppable dno-0 rid-{{rsObj.RID}} tree-level-group-resource" ng-class="{true:'isNew',false:''}[rsObj.hasOwnProperty('isNew') && rsObj.isNew == true]" droppable>
-                                    <a class="toc-selection cls-{{rsObj.RID}}"><h4 class="toc-collection-folder" ng-class="{'selected-collection': rsObj.RID == selected_collection}"><span class="fa fa-file-image-o">&nbsp;&nbsp;</span><span ng-bind="rsObj.Collection"></span></h4></a>
-                                </div>
-                                
-                                <ul class="fa fa-ul toc-collection toc-folder cls-{{rsObj.RID}}" ng-hide="rsObj.RID != selected_collection">
-                                    <li class="toc-file toc-image li-{{rsLiObj.ColRid}}" ng-repeat="rsLiObj in resources_of_current_collection" ng-click="setCurrentResource(rsLiObj.ColRid, rsLiObj.displayseqno)" ng-class="{'selected-resource': rsLiObj.ColRid == selected_resource}">  <div class="droppable dno-{{rsLiObj.displayseqno}} rid-{{rsLiObj.ColRid}} tree-level-resource" ng-class="{true:'isNew',false:''}[rsLiObj.hasOwnProperty('isNew') && rsLiObj.isNew == true]" droppable> <span class="fa fa-li fa-file-image-o"></span> <span ng-class="{true: 'mark-blod', false: 'mark-unblod'}[rsLiObj.ColRid == rid]" ng-bind="rsLiObj.Resource"></span> </div> </li>
-                                </ul>
-                            </div>            
-                            
-                        </div>
-                        
-                    </div>
-            
-                  </div>
-            -->                        
-
-            <div class="my-library-actions">
-                <button class="button-cancel" onclick="onCancel()"><?php echo __('Cancel', 'curriki'); ?></button>
-                <button id="done-btn" class="button-save button-save-disable"><?php echo __('Done', 'curriki'); ?></button>
-            </div>
-
         </div>
-    <!--    <div class="close" ng-click="onCancel()"><span class="fa fa-close add-to-lib-close-btn"></span></div>    -->
     </div>
-
-    <div id="add-to-lib-alert-box" class="my-library-modal modal border-grey rounded-borders-full grid_6" style="display: none;">
-        <h3 class="modal-title"><?php echo __('Resource Added!', 'curriki'); ?></h3>
-        <div class="grid_8 center">
-            <div style="margin: 0 auto;">
-                <p>
-                    <?php echo __('The resource has been added to your collection', 'curriki'); ?>
-                </p>                
-            </div>
-
-            <div class="my-library-actions" style="margin: 0 auto;">
-                <!--<button class="button-cancel">Don't Delete</button>-->
-                <button class="button-save" id="continue_adding_btn"><?php echo __('Continue Adding', 'curriki'); ?>  >> </button>
-                <button class="button-save collid-0" id="go_to_collection_btn" style="width: 180px !important;"><?php echo __('Go to Selected Collection !', 'curriki'); ?></button>
-                <button class="button-save" id="go_to_lib_btn"><?php echo __('Go to Library !', 'curriki'); ?></button>                                    
-                <button class="button-cancel close-add-to-lib-alert-box"><?php echo __('Close', 'curriki'); ?></button>
-            </div>
-        </div>
-        <div class="close close-add-to-lib-alert-box"><span class="fa fa-close"></span></div>
-        <input type="hidden" name="base_url" id="base_url" value="<?php echo get_site_url(); ?>" />
-        <input type="hidden" name="resource_title_mdl" id="resource_title_mdl" value="" />
-        <input type="hidden" name="rid_mdl" id="rid_mdl" class="rid_mdl" value="" />
-    </div>
-
-    <?php
-    /*
-    <div class="modal fade" id="add-to-lib-alert-box" tabindex="-1" role="dialog">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-wrap">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">×</button>
-						<h4 class="modal-title"><?php echo __('Resource Added!', 'curriki'); ?></h4>
-					</div>
-					<div class="modal-body">
-						<p><strong><?php echo __('The resource has been added to your collection', 'curriki'); ?></strong></p>
-						<div class="buttonpane buttonpane-margin-right py-60">
-							<button class="btn btn-blue" type="button" id="continue_adding_btn"><?php echo __('Continue Adding', 'curriki'); ?> &gt;&gt;</button>
-							<button class="btn btn-blue" type="button" id="go_to_collection_btn"><?php echo __('Go to Selected Collection !', 'curriki'); ?></button>
-                            <button class="btn btn-blue" type="button" id="go_to_lib_btn"><?php echo __('Go to Library !', 'curriki'); ?></button>
-
-                            <input type="hidden" name="base_url" id="base_url" value="<?php echo get_site_url(); ?>" />
-                            <input type="hidden" name="resource_title_mdl" id="resource_title_mdl" value="" />
-                            <input type="hidden" name="rid_mdl" id="rid_mdl" class="rid_mdl" value="" />
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-    </div>
-    */
-    ?>
 </div>
-
-<style type="text/css">
-   /* 
-#add-to-lib-dialog {    
-    z-index: 99999;
-    position: fixed !important;
-    top: 0px !important;
-    margin-left: -677px !important;
-    left: 50% !important;
-}*/
-</style>

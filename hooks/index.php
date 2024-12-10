@@ -6,4 +6,5 @@ require_once 'oer-page-resources-widget/oer-page-resources-widget.php';
 require_once 'oer-page-resource-shortcode/oer-page-resource-shortcode.php';
 require_once 'my-library-oers-widget/my-library-oers-widget.php';
 require_once 'my-library-oer-shortcode/my-library-oer-shortcode.php';
+require_once realpath(__DIR__ ) . '/core/oer/ajax-actions.php';
 ?>
