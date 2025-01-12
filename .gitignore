@@ -1,0 +1,46 @@
+# Ignore everything in the root except the wp-content directory
+# /*
+# !.gitignore
+# !/wp-content/
+
+# Ignore everything in the wp-content directory except themes and plugins
+# /wp-content/*
+# !/wp-content/themes/
+# /wp-content/themes/*
+# !/wp-content/themes/genesis/
+# /wp-content/themes/genesis-curriki/
+# !/wp-content/plugins/
+# /wp-content/plugins/*
+
+# Do not ignore the specific themes
+# !/wp-content/themes/genesis/
+# !/wp-content/themes/genesis-curriki/
+
+# Do not ignore the specific plugins
+# !/wp-content/plugins/crurriki-group-library/
+# !/wp-content/plugins/curriki_manage/
+# !/wp-content/plugins/curriki-customized/
+# !/wp-content/plugins/curriki-group-import/
+# !/wp-content/plugins/curriki-manage-groups/
+# !/wp-content/plugins/curriki-recommender/
+# !/wp-content/plugins/curriki-site/
+# !/clever_login/
+# !/cron/
+# !/curriki_scripts/
+# !/curriki-xapi-app/
+# !/lti/
+# !/ltiapp/
+# !/wp-content/libs/
+
+# ==== Config files to ignore ====
+/hooks/core/libs/google/vendor/google/auth/tests/fixtures/*.json
+/hooks/core/libs/google/vendor/google/auth/tests/fixtures/*.pem
+/hooks/core/libs/google/vendor/google/auth/tests/fixtures/.config/gcloud/*.json
+/hooks/core/libs/google/vendor/google/auth/tests/fixtures2/*.json
+/hooks/core/libs/google/vendor/google/auth/tests/fixtures2/*.pem
+/hooks/core/libs/google/vendor/google/auth/tests/fixtures2/.config/gcloud/*.json
+/hooks/core/libs/aws_sdk/Guzzle/Http/Resources/*.pem
+/hooks/core/oer/manage/lib/googleanalytics/*.json
+/hooks/core/oer/manage/lib/googleanalytics/vendor/google/auth/tests/fixtures/*.pem
+/hooks/core/oer/manage/lib/googleanalytics/vendor/google/auth/tests/fixtures/*.json
+/hooks/core/oer/manage/lib/googleanalytics/vendor/google/auth/tests/fixtures/.config/gcloud/*.json
