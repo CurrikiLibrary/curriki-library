@@ -1,5 +1,9 @@
 <?php
 
+if (!function_exists('cur_get_current_language')) {
+    require_once realpath(__DIR__ . '/../') . '/core/translation-functions.php';
+}
+
 function oer_create_edit_wizard() {
     ob_start();
     global $wpdb;

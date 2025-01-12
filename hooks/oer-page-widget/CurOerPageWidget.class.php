@@ -126,7 +126,7 @@ class CurOERPageWidget extends \Elementor\Widget_Base {
     protected function render() {
         $settings = $this->get_settings_for_display();
         $templateId = $settings['template_id'] ? intval($settings['template_id']) : 0;
-        $resourceId = $settings['resource_id'];
+        $resourceId = isset($_GET['rid']) && intval($_GET['rid']) > 0 ? $_GET['rid'] : $settings['resource_id'];
 
         require_once(__DIR__ . '/../core/CurrikiResources.class.php');
         $res = new CurrikiResources();

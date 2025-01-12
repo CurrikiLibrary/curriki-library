@@ -17,7 +17,9 @@ function oer_create_edit_shortcode_fun($atts) {
     if ($property == 'wizard') {
         require_once plugin_dir_path( __FILE__ ) . 'oer-create-edit-wizard.php';
         $output = oer_create_edit_wizard();
-        
+    } elseif ($property == 'course-wizard') {
+        require_once plugin_dir_path( __FILE__ ) . 'oer-course-create-edit-wizard.php';
+        $output = oer_course_create_edit_wizard();
     }
 
     return $output;

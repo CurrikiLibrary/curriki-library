@@ -1,5 +1,5 @@
 <?php
-class CurOERCreateEditPageWidget extends \Elementor\Widget_Base {
+class CurOerCreateEditPageWidget extends \Elementor\Widget_Base {
     
     // ... other methods like get_title(), get_icon(), get_categories(), get_keywords()
 

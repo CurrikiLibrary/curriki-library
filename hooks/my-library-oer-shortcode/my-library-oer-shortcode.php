@@ -15,7 +15,11 @@ function my_library_oer_shortcode_fun($atts) {
     
     global $myLibraryOerData;
     // if property exists in the $myLibraryOerData object, return the value
-    if ($property == 'library_pagination') {
+    if ($property == 'css-class') {
+        $output =  'css-class-'.$myLibraryOerData['typeName'];
+    } elseif ($property == 'css-id') {
+        $output =  'css-id-'.$myLibraryOerData['resourceid'];
+    } elseif ($property == 'library_pagination') {
         global $userLibraryPagination;
         $output = $userLibraryPagination;
     } elseif ($property == 'library_sorting') {

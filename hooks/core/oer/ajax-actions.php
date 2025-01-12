@@ -641,4 +641,46 @@ function striposa($haystack, $needles=array(), $offset=0) {
         return true;    
 }
 
+/*
+ * Ajax for checking recaptcha
+ */
+
+ function validate_recaptcha() {
+ 
+    // The $_REQUEST contains all the data sent via ajax
+    if ( isset($_REQUEST) ) {
+		/*
+        $recaptcha_val = $_REQUEST['recaptcha_val'];
+        // Now we'll return it to the javascript function
+        // Anything outputted will be returned in the response
+        if($recaptcha_val){
+            $_SESSION['g-recaptcha-response'] = $recaptcha_val;
+            $_SESSION['i-am-human'] = $recaptcha_val;
+            echo json_encode(['success'=>true]);
+        } else {
+            echo json_encode(['success'=>false]);
+        }
+        // If you're debugging, it might be useful to see what was sent in the $_REQUEST
+        // print_r($_REQUEST);
+		*/
+
+		$token = $_REQUEST['token'];
+		$secret = GOOGLE_RECAPTCHA_SECRET_KEY;
+
+		$verifyResponse = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret.'&response='.$token);
+		$responseData = json_decode($verifyResponse);
+		if ($responseData->success) {
+			wp_send_json_success($responseData);
+		} else {
+			wp_send_json_error($responseData);
+		}
+    }
+     
+    // Always die in functions echoing ajax content
+	wp_send_json_error();
+}
+ 
+add_action( 'wp_ajax_nopriv_validate_recaptcha', 'validate_recaptcha' );
+add_action( 'wp_ajax_validate_recaptcha', 'validate_recaptcha' );
+
 // include("custom-functions-a.php");

@@ -21,7 +21,13 @@ function oer_page_shortcode_fun($atts) {
     global $oerPageData;
     global $oerPageDataById;
     // if property exists in the $oerPageData object, return the value
-    if ($oerPageDataById && $property == 'add-to-library-modal') {
+    if ($oerPageDataById && $property == 'review-resource-url') {
+        $resource = $oerPageDataById;
+        $output = site_url('oer/' . $resource['pageurl'] . '/?action=review_resource');
+    } elseif ($oerPageDataById && $property == 'edit-url') {
+        $resource = $oerPageDataById;
+        $output = site_url('create-resource/?resourceid=' . $resource['resourceid']);
+    } elseif ($oerPageDataById && $property == 'add-to-library-modal') {
         require_once dirname(__FILE__) . '/../core/oer/ajax-actions.php';
         require_once 'functions.php';
         $output = curr_add_to_library_modal();

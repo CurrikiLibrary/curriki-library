@@ -1,5 +1,5 @@
 <?php
-function getOerColumns() : array {
+function getOerColumnsFn() : array {
     $columns = [
         'resourceid',
         'licenseid',
@@ -81,7 +81,7 @@ function getOerColumns() : array {
     return $columns;
 }
 
-function getOerMetadata(): array {
+function getOerMetadataFn(): array {
     $metadata = [
         'educationlevels',
         'subjectareas'
@@ -89,7 +89,7 @@ function getOerMetadata(): array {
     return $metadata;
 }
 
-function getOerEducationlevels() : array {
+function getOerEducationlevelsFn() : array {
     $education_levels = array(
         array('title' => __('Preschool (Ages 0-4)', 'curriki'), 'levels' => '8|9', 'arlevels' => array(8, 9)),
         array('title' => __('Kindergarten-Grade 2 (Ages 5-7) ', 'curriki'), 'levels' => '3|4', 'arlevels' => array(3, 4)),

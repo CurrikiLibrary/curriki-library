@@ -13,4 +13,19 @@ function register_elementor_my_library_oers_widget($widgets_manager) {
 }
 add_action('elementor/widgets/register', 'register_elementor_my_library_oers_widget');
 
+
+function my_library_oers_widget_before_render( $element ) {
+    if (is_object($element) && get_class($element) === 'Elementor\Widget_Icon') {
+        // var_dump($element->get_settings('_css_classes'));
+        global $myLibraryOerData;
+        if ($myLibraryOerData['type'] === 'resource' && $element->get_settings('_css_classes') === 'collection-item') {
+            $element->add_render_attribute('_wrapper', 'style', 'display: none;');
+        }
+        if ($myLibraryOerData['type'] === 'collection' && $element->get_settings('_css_classes') === 'resource-item') {
+            $element->add_render_attribute('_wrapper', 'style', 'display: none;');
+        }
+    }
+}
+add_action( 'elementor/frontend/before_render', 'my_library_oers_widget_before_render' );
+
 ?>

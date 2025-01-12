@@ -4,8 +4,8 @@ require_once dirname(__DIR__) . '/core/CurrikiResources.class.php';
 
 function oer_shortcode_fun($atts) {
     // Define the valid columns
-    $valid_columns = getOerColumns();
-    $valid_metadata = getOerMetadata();
+    $valid_columns = getOerColumnsFn();
+    $valid_metadata = getOerMetadataFn();
     
     // Extract attributes and set defaults
     $atts = shortcode_atts([
@@ -70,7 +70,7 @@ function oer_shortcode_fun($atts) {
             $output = site_url('oer/' . $result->$property);
         } elseif ($property == 'educationlevels') {
             $resource_educationlevels = [];
-            $education_levels = getOerEducationlevels();
+            $education_levels = getOerEducationlevelsFn();
             $result_el = $wpdb->get_results('select * from resource_educationlevels where resourceid = ' . $result->resourceid, ARRAY_A);
             if (isset($result_el) and count($result_el) > 0)
                 foreach ($result_el as $r)

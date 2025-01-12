@@ -63,13 +63,12 @@ function oer_create_edit_page_init() {
 
 function register_elementor_oer_create_edit_page_widget($widgets_manager) {
     require_once(__DIR__ . '/CurOerCreateEditPageWidget.class.php');
-    $widgets_manager->register( new \CurOERCreateEditPageWidget() );
+    $widgets_manager->register( new \CurOerCreateEditPageWidget() );
 }
 add_action('elementor/widgets/register', 'register_elementor_oer_create_edit_page_widget');
 
-
 function oer_create_edit_page_after_render( $element ) {
-    if (is_object($element) && get_class($element) === 'CurOERCreateEditPageWidget') {
+    if (is_object($element) && get_class($element) === 'CurOerCreateEditPageWidget') {
         oer_create_edit_page_after_load_scripts();
     }
 }
@@ -77,7 +76,7 @@ add_action( 'elementor/frontend/after_render', 'oer_create_edit_page_after_rende
 
 
 function oer_create_edit_page_before_render( $element ) {
-    if (is_object($element) && get_class($element) === 'CurOERCreateEditPageWidget') {
+    if (is_object($element) && get_class($element) === 'CurOerCreateEditPageWidget') {
         oer_create_edit_page_init();
     }
 }
