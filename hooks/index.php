@@ -17,4 +17,6 @@ require_once 'search-page-widget/search-page-widget.php';
 require_once 'search-page-widget/shortcode.php';
 require_once 'search-page-results-widget/search-page-results-widget.php';
 require_once 'search-result-shortcode/search-result-shortcode.php';
+require_once 'core/modules/groups/index.php';
+require_once 'core/modules/admin/index.php';
 ?>

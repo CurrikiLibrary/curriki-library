@@ -5,6 +5,12 @@ require_once 'common-functions.php';
 function curriki_user_my_library() {
     global $wpdb;
     $myid = get_current_user_id();
+    if (isset($_GET['user'])) {
+        $user = get_user_by('login', $_GET['user']);
+        if ($user) {
+            $myid = $user->ID;
+        }
+    }
     $q_me = "SELECT * FROM users WHERE userid = '" . $myid . "'";
     $me = $wpdb->get_row($q_me);
     $myname = $me->firstname . ' ' . $me->lastname;
@@ -16,7 +22,7 @@ function curriki_user_my_library() {
     if (!empty($me->uniqueavatarfile))
         $myphoto = "https://archivecurrikicdn.s3-us-west-2.amazonaws.com/avatars/" . $me->uniqueavatarfile;
     else
-        $myphoto = get_stylesheet_directory_uri() . '/images/user-icon-sample.png';
+        $myphoto = plugins_url('core/iamges/user-icon-sample.png', __DIR__);
 
     if(!empty($_GET['library_sorting'])) {
         $_SESSION['library_sorting'] = $_GET['library_sorting'];
@@ -73,7 +79,7 @@ function curriki_user_my_library() {
         if (!empty($collection->uniqueavatarfile))
             $myphoto = "https://archivecurrikicdn.s3-us-west-2.amazonaws.com/avatars/" . $collection->uniqueavatarfile;
         else
-            $myphoto = get_stylesheet_directory_uri() . '/images/user-icon-sample.png';
+            $myphoto = plugins_url('core/images/user-icon-sample.png', __DIR__);
 
         $fav_coll_q = "SELECT ce.resourceid , ce.collectionid , r.title , (SELECT rc.title FROM resources rc WHERE rc.resourceid = ce.collectionid AND rc.title = 'Favorites') as collection_title
                         FROM resources r 
@@ -114,7 +120,9 @@ function curriki_user_my_library() {
 
     $current_page_permalink = get_permalink();
     $user_library['pagination'] = library_pagination($current_page_permalink . '?library_sorting=' . $_GET['library_sorting'], $_GET['page_no'], ceil($total_resources / 10));
-
+    if (isset($_GET['user'])) {
+        $user_library['pagination'] = library_pagination($current_page_permalink . '?' . 'user=' . $_GET['user'] . '&library_sorting=' . $_GET['library_sorting'], $_GET['page_no'], ceil($total_resources / 10));
+    }
     return $user_library;
 }
 
